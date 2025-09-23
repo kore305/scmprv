@@ -3,7 +3,7 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "python manage.py migrate && python manage.py import_programs && gunicorn gds.wsgi --log-file -",
+    "startCommand": "python manage.py migrate && python manage.py import_programs && gunicorn scmprv.wsgi --log-file -",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   }
