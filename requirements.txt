@@ -1,0 +1,11 @@
+Django
+python-decouple
+requests
+twilio
+pandas
+openpyxl
+gunicorn
+psycopg2-binary
+whitenoise
+dj-database-url
+googletrans
