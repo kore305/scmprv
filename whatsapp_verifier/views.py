@@ -3,7 +3,6 @@ from django.views.decorators.csrf import csrf_exempt
 from decouple import config
 import requests
 import time
-import threading
 from .models import WhatsAppSession
 from .utils import verify_link_virustotal, get_program_info, translate_text
 
@@ -28,37 +27,26 @@ def send_whatsapp_message(to_number, message):
         response = requests.post(url, auth=auth, data=data)
         
         if response.status_code == 201:
-            print("Message sent successfully")
+            print("✓ Message sent successfully")
             return True
         else:
-            print(f"Twilio API error: {response.status_code} - {response.text}")
+            print(f"✗ Twilio API error: {response.status_code}")
             return False
             
     except Exception as e:
-        print(f"Error sending message: {e}")
+        print(f"✗ Error sending message: {e}")
         return False
 
 def get_main_menu_message():
-    """Simple menu without translation for now"""
+    """Main menu for the bot"""
     return """Welcome to Federal Programs Info Service! 📊
 
 What would you like to do?
-1. 🔗 Verify a link
+1. 🔗 Verify a link safety
 2. ℹ️ Get program information  
 3. 🌐 Change language
 
 Reply with 1, 2, or 3"""
-
-def send_menu_after_delay(phone_number, delay=5):
-    """Send menu after a delay"""
-    def delayed_menu():
-        time.sleep(delay)
-        send_whatsapp_message(phone_number, get_main_menu_message())
-    
-    # Run in background thread to avoid blocking
-    thread = threading.Thread(target=delayed_menu)
-    thread.daemon = True
-    thread.start()
 
 @csrf_exempt
 def whatsapp_webhook(request):
@@ -66,19 +54,19 @@ def whatsapp_webhook(request):
     
     # Handle GET request (Twilio webhook verification)
     if request.method == 'GET':
-        print("GET request - Webhook verification")
+        print("✓ GET request - Webhook verification")
         return HttpResponse("Webhook verified!")
     
     # Handle POST request (messages)
     elif request.method == 'POST':
-        print("POST request - Message received")
+        print("✓ POST request - Message received")
         
         try:
             data = request.POST
             from_number = data.get('From', '').replace('whatsapp:', '')
             message_body = data.get('Body', '').strip().lower()
             
-            print(f"Message from {from_number}: {message_body}")
+            print(f"📩 Message from {from_number}: {message_body}")
             
             # Get or create session
             session, created = WhatsAppSession.objects.get_or_create(phone_number=from_number)
@@ -90,9 +78,16 @@ def whatsapp_webhook(request):
                 session.language = lang_map[message_body]
                 session.current_step = 'main_menu'
                 session.save()
-                send_whatsapp_message(from_number, f"Language set to {message_body.capitalize()}! 🌍")
-                # Don't send menu immediately after language change
-                send_menu_after_delay(from_number, 2)
+                send_whatsapp_message(from_number, f"✓ Language set to {message_body.capitalize()}! 🌍")
+                time.sleep(1)
+                send_whatsapp_message(from_number, get_main_menu_message())
+                return HttpResponse("OK")
+            
+            # Handle "menu" command from any state
+            if message_body == 'menu':
+                session.current_step = 'main_menu'
+                session.save()
+                send_whatsapp_message(from_number, get_main_menu_message())
                 return HttpResponse("OK")
             
             # Handle main menu options
@@ -100,17 +95,17 @@ def whatsapp_webhook(request):
                 if message_body in ['1', 'verify', 'verify link', 'link']:
                     session.current_step = 'awaiting_link'
                     session.save()
-                    send_whatsapp_message(from_number, "🔗 Please paste the link you want to verify:\n\nExample: https://google.com")
+                    send_whatsapp_message(from_number, "🔗 Please paste the link you want to verify:\n\nExample: https://google.com\n\nType 'menu' to go back")
                     
                 elif message_body in ['2', 'info', 'information', 'program']:
                     session.current_step = 'awaiting_program'
                     session.save()
-                    send_whatsapp_message(from_number, "ℹ️ Please enter the program name:\n\nExamples:\n- N-Power\n- Anchor Borrowers\n- Conditional Cash Transfer")
+                    send_whatsapp_message(from_number, "ℹ️ Please enter the program name:\n\nExamples:\n- N-Power\n- Anchor Borrowers\n- Conditional Cash Transfer\n\nType 'menu' to go back")
                     
                 elif message_body in ['3', 'language', 'change language']:
                     session.current_step = 'awaiting_language'
                     session.save()
-                    send_whatsapp_message(from_number, "🌐 Choose your language:\n\n1. English\n2. Igbo\n3. Hausa\n4. Yoruba")
+                    send_whatsapp_message(from_number, "🌐 Choose your language:\n\n1. English\n2. Igbo\n3. Hausa\n4. Yoruba\n\nType 'menu' to go back")
                     
                 else:
                     # Show main menu for any other message
@@ -127,24 +122,48 @@ def whatsapp_webhook(request):
                 # Send the result
                 send_whatsapp_message(from_number, result)
                 
-                # Return to main menu
-                session.current_step = 'main_menu'
+                # Wait a moment
+                time.sleep(2)
+                
+                # Offer next steps
+                send_whatsapp_message(from_number, "What would you like to do next?\n\n1. Verify another link\n2. Get program info\n3. Main menu\n\nOr type 'menu' for main menu")
+                
+                # Stay in link mode for quick follow-up
+                session.current_step = 'awaiting_link_followup'
                 session.save()
                 
-                # Send menu after delay
-                send_menu_after_delay(from_number, 5)
+            # Handle link verification follow-up
+            elif session.current_step == 'awaiting_link_followup':
+                if message_body in ['1', 'another', 'verify']:
+                    session.current_step = 'awaiting_link'
+                    session.save()
+                    send_whatsapp_message(from_number, "🔗 Please paste the next link you want to verify:")
+                elif message_body in ['2', 'info', 'program']:
+                    session.current_step = 'awaiting_program'
+                    session.save()
+                    send_whatsapp_message(from_number, "ℹ️ Please enter the program name:")
+                elif message_body in ['3', 'menu']:
+                    session.current_step = 'main_menu'
+                    session.save()
+                    send_whatsapp_message(from_number, get_main_menu_message())
+                else:
+                    session.current_step = 'main_menu'
+                    session.save()
+                    send_whatsapp_message(from_number, get_main_menu_message())
                 
             # Handle program information request
             elif session.current_step == 'awaiting_program':
+                # Send processing message
+                send_whatsapp_message(from_number, "🔍 Searching for program information...")
+                
                 result = get_program_info(message_body, session.language)
                 send_whatsapp_message(from_number, result)
                 
                 # Return to main menu
                 session.current_step = 'main_menu'
                 session.save()
-                
-                # Send menu after delay
-                send_menu_after_delay(from_number, 3)
+                time.sleep(2)
+                send_whatsapp_message(from_number, get_main_menu_message())
                 
             # Handle language change
             elif session.current_step == 'awaiting_language':
@@ -155,7 +174,8 @@ def whatsapp_webhook(request):
                     session.save()
                     lang_names = {'en': 'English', 'ig': 'Igbo', 'ha': 'Hausa', 'yo': 'Yoruba'}
                     send_whatsapp_message(from_number, f"✅ Language set to {lang_names[session.language]}!")
-                    send_menu_after_delay(from_number, 2)
+                    time.sleep(1)
+                    send_whatsapp_message(from_number, get_main_menu_message())
                 else:
                     send_whatsapp_message(from_number, "❌ Invalid choice. Please select 1, 2, 3, or 4")
                     send_whatsapp_message(from_number, "🌐 Choose your language:\n1. English\n2. Igbo\n3. Hausa\n4. Yoruba")
@@ -163,13 +183,14 @@ def whatsapp_webhook(request):
             return HttpResponse("OK")
             
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"✗ Error: {e}")
             # Reset session on error
             try:
                 session.current_step = 'main_menu'
                 session.save()
                 send_whatsapp_message(from_number, "❌ An error occurred. Returning to main menu.")
-                send_menu_after_delay(from_number, 3)
+                time.sleep(1)
+                send_whatsapp_message(from_number, get_main_menu_message())
             except:
                 pass
             return HttpResponse("Error", status=500)
