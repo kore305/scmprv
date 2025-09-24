@@ -1,7 +1,9 @@
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from twilio.rest import Client
 from decouple import config
+import requests
+import time
+import threading
 from .models import WhatsAppSession
 from .utils import verify_link_virustotal, get_program_info, translate_text
 
@@ -10,126 +12,166 @@ TWILIO_ACCOUNT_SID = config('TWILIO_ACCOUNT_SID')
 TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN')
 TWILIO_WHATSAPP_NUMBER = config('TWILIO_WHATSAPP_NUMBER')
 
-twilio_client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
-
 def send_whatsapp_message(to_number, message):
-    """Send a message via WhatsApp using Twilio"""
+    """Send message using Twilio API directly"""
     try:
-        message = twilio_client.messages.create(
-            body=message,
-            from_=f'whatsapp:{TWILIO_WHATSAPP_NUMBER}',
-            to=f'whatsapp:{to_number}'
-        )
-        return message.sid
+        url = f"https://api.twilio.com/2010-04-01/Accounts/{TWILIO_ACCOUNT_SID}/Messages.json"
+        
+        auth = (TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+        
+        data = {
+            'From': f'whatsapp:{TWILIO_WHATSAPP_NUMBER}',
+            'To': f'whatsapp:{to_number}',
+            'Body': message
+        }
+        
+        response = requests.post(url, auth=auth, data=data)
+        
+        if response.status_code == 201:
+            print("Message sent successfully")
+            return True
+        else:
+            print(f"Twilio API error: {response.status_code} - {response.text}")
+            return False
+            
     except Exception as e:
-        print(f"Error sending WhatsApp message: {e}")
-        return None
+        print(f"Error sending message: {e}")
+        return False
 
-def get_main_menu_message(language='en'):
-    messages = {
-        'en': "Welcome to Federal Programs Info Service. Please choose an option:\n1. Verify link\n2. Get information\n3. Change language",
-        'igbo': "Nnọọ na Federal Programs Info Service. Biko họrọ nhọrọ:\n1. Nyochaa njikọ\n2. Nweta ozi\n3. Gbanwee asụsụ",
-        'hausa': "Barka da zuwa Federal Programs Info Service. Da fatan za a zaɓi zaɓi:\n1. Tabbatar da hanyar haɗi\n2. Sami bayani\n3. Canza harshe",
-        'yoruba': "Kaabo si Federal Programs Info Service. Jọwọ yan aṣayan:\n1. Ṣayẹwo ọna asopọ\n2. Gba alaye\n3. Yi ede pada"
-    }
-    return messages.get(language, messages['en'])
+def get_main_menu_message():
+    """Simple menu without translation for now"""
+    return """Welcome to Federal Programs Info Service! 📊
 
-def get_prompt_message(prompt, language='en'):
-    translations = {
-        'en': prompt,
-        'igbo': translate_text(prompt, 'ig'),
-        'hausa': translate_text(prompt, 'ha'),
-        'yoruba': translate_text(prompt, 'yo')
-    }
-    return translations.get(language, prompt)
+What would you like to do?
+1. 🔗 Verify a link
+2. ℹ️ Get program information  
+3. 🌐 Change language
 
-def get_language_options_message():
-    return "Please choose your language:\n1. English\n2. Igbo\n3. Hausa\n4. Yoruba"
+Reply with 1, 2, or 3"""
+
+def send_menu_after_delay(phone_number, delay=5):
+    """Send menu after a delay"""
+    def delayed_menu():
+        time.sleep(delay)
+        send_whatsapp_message(phone_number, get_main_menu_message())
+    
+    # Run in background thread to avoid blocking
+    thread = threading.Thread(target=delayed_menu)
+    thread.daemon = True
+    thread.start()
 
 @csrf_exempt
 def whatsapp_webhook(request):
-    """Handle incoming WhatsApp messages from Twilio"""
+    """Handle incoming WhatsApp messages"""
     
     # Handle GET request (Twilio webhook verification)
     if request.method == 'GET':
-        print("GET request - Twilio webhook verification")
-        return HttpResponse("Webhook verified successfully!")
+        print("GET request - Webhook verification")
+        return HttpResponse("Webhook verified!")
     
-    # Handle POST request (actual messages)
+    # Handle POST request (messages)
     elif request.method == 'POST':
         print("POST request - Message received")
         
         try:
-            # Extract incoming message data from Twilio
             data = request.POST
             from_number = data.get('From', '').replace('whatsapp:', '')
             message_body = data.get('Body', '').strip().lower()
             
             print(f"Message from {from_number}: {message_body}")
             
-            # Get or create user session
+            # Get or create session
             session, created = WhatsAppSession.objects.get_or_create(phone_number=from_number)
             
             # Handle language selection
-            if message_body in ['english', 'igbo', 'hausa', 'yoruba']:
-                session.language = message_body
+            if message_body in ['english', 'igbo', 'hausa', 'yoruba', 'en', 'ig', 'ha', 'yo']:
+                lang_map = {'english': 'en', 'igbo': 'ig', 'hausa': 'ha', 'yoruba': 'yo', 
+                           'en': 'en', 'ig': 'ig', 'ha': 'ha', 'yo': 'yo'}
+                session.language = lang_map[message_body]
                 session.current_step = 'main_menu'
                 session.save()
-                send_whatsapp_message(from_number, get_main_menu_message(session.language))
+                send_whatsapp_message(from_number, f"Language set to {message_body.capitalize()}! 🌍")
+                # Don't send menu immediately after language change
+                send_menu_after_delay(from_number, 2)
                 return HttpResponse("OK")
             
             # Handle main menu options
             if session.current_step == 'main_menu':
-                if message_body == 'verify link':
+                if message_body in ['1', 'verify', 'verify link', 'link']:
                     session.current_step = 'awaiting_link'
                     session.save()
-                    prompt = get_prompt_message("Please paste the link you want to verify:", session.language)
-                    send_whatsapp_message(from_number, prompt)
-                elif message_body == 'get information':
-                    session.current_step = 'awaiting_program_name'
+                    send_whatsapp_message(from_number, "🔗 Please paste the link you want to verify:\n\nExample: https://google.com")
+                    
+                elif message_body in ['2', 'info', 'information', 'program']:
+                    session.current_step = 'awaiting_program'
                     session.save()
-                    prompt = get_prompt_message("Please enter the name of the federal program:", session.language)
-                    send_whatsapp_message(from_number, prompt)
-                elif message_body == 'change language':
+                    send_whatsapp_message(from_number, "ℹ️ Please enter the program name:\n\nExamples:\n- N-Power\n- Anchor Borrowers\n- Conditional Cash Transfer")
+                    
+                elif message_body in ['3', 'language', 'change language']:
                     session.current_step = 'awaiting_language'
                     session.save()
-                    send_whatsapp_message(from_number, get_language_options_message())
+                    send_whatsapp_message(from_number, "🌐 Choose your language:\n\n1. English\n2. Igbo\n3. Hausa\n4. Yoruba")
+                    
                 else:
-                    send_whatsapp_message(from_number, get_main_menu_message(session.language))
+                    # Show main menu for any other message
+                    send_whatsapp_message(from_number, get_main_menu_message())
             
             # Handle link verification
             elif session.current_step == 'awaiting_link':
+                # Send immediate acknowledgment
+                send_whatsapp_message(from_number, "⏳ Analyzing your link... Please wait a moment.")
+                
+                # Process the link analysis
                 result = verify_link_virustotal(message_body)
-                if session.language != 'en':
-                    result = translate_text(result, session.language)
+                
+                # Send the result
                 send_whatsapp_message(from_number, result)
+                
+                # Return to main menu
                 session.current_step = 'main_menu'
                 session.save()
-                send_whatsapp_message(from_number, get_main_menu_message(session.language))
-            
+                
+                # Send menu after delay
+                send_menu_after_delay(from_number, 5)
+                
             # Handle program information request
-            elif session.current_step == 'awaiting_program_name':
+            elif session.current_step == 'awaiting_program':
                 result = get_program_info(message_body, session.language)
                 send_whatsapp_message(from_number, result)
+                
+                # Return to main menu
                 session.current_step = 'main_menu'
                 session.save()
-                send_whatsapp_message(from_number, get_main_menu_message(session.language))
-            
+                
+                # Send menu after delay
+                send_menu_after_delay(from_number, 3)
+                
             # Handle language change
             elif session.current_step == 'awaiting_language':
-                if message_body in ['english', 'igbo', 'hausa', 'yoruba']:
-                    session.language = message_body
+                lang_options = {'1': 'en', '2': 'ig', '3': 'ha', '4': 'yo'}
+                if message_body in lang_options:
+                    session.language = lang_options[message_body]
                     session.current_step = 'main_menu'
                     session.save()
-                    send_whatsapp_message(from_number, get_main_menu_message(session.language))
+                    lang_names = {'en': 'English', 'ig': 'Igbo', 'ha': 'Hausa', 'yo': 'Yoruba'}
+                    send_whatsapp_message(from_number, f"✅ Language set to {lang_names[session.language]}!")
+                    send_menu_after_delay(from_number, 2)
                 else:
-                    send_whatsapp_message(from_number, get_language_options_message())
+                    send_whatsapp_message(from_number, "❌ Invalid choice. Please select 1, 2, 3, or 4")
+                    send_whatsapp_message(from_number, "🌐 Choose your language:\n1. English\n2. Igbo\n3. Hausa\n4. Yoruba")
             
             return HttpResponse("OK")
-        
+            
         except Exception as e:
-            print(f"Error processing WhatsApp message: {e}")
+            print(f"Error: {e}")
+            # Reset session on error
+            try:
+                session.current_step = 'main_menu'
+                session.save()
+                send_whatsapp_message(from_number, "❌ An error occurred. Returning to main menu.")
+                send_menu_after_delay(from_number, 3)
+            except:
+                pass
             return HttpResponse("Error", status=500)
     
-    # Handle other methods
     return HttpResponse("Method not allowed", status=405)
