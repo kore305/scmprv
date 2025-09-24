@@ -10,3 +10,5 @@ whitenoise
 dj-database-url
 googletrans
 django-model-utils
+djangorestframework
+django-cors-headers

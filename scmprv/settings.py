@@ -11,19 +11,21 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-
 import os
 from pathlib import Path
 from decouple import config
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('DJANGO_SECRET_KEY')
 
-DEBUG = False
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['*']
+# Update ALLOWED_HOSTS for Railway + local development
+ALLOWED_HOSTS = ['*']  # Railway handles this securely
 
+# Add website API to existing apps
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -31,11 +33,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'whatsapp_verifier',
+    'rest_framework',          # NEW: For website APIs
+    'corsheaders',            # NEW: For React communication
+    'whatsapp_verifier',      # Your existing WhatsApp bot
     'model_utils',
+    'website_api',            # NEW: Website functionality
 ]
 
+# Update middleware for website support
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # NEW: Must be first
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -51,7 +58,9 @@ ROOT_URLCONF = 'scmprv.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / 'frontend' / 'build',  # NEW: For React production build
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -66,11 +75,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'scmprv.wsgi.application'
 
+# Database configuration for Railway
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.parse(
+        config('DATABASE_URL', default=f'sqlite:///{BASE_DIR}/db.sqlite3')
+    )
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -93,12 +102,45 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = 'static/'
+# Static files configuration for Railway + React
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# NEW: Serve React build files
+STATICFILES_DIRS = [
+    BASE_DIR / 'frontend' / 'build' / 'static',  # React build static files
+]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Twilio Configuration
+# Existing Twilio Configuration
 TWILIO_ACCOUNT_SID = config('TWILIO_ACCOUNT_SID')
 TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN')
 TWILIO_WHATSAPP_NUMBER = config('TWILIO_WHATSAPP_NUMBER')
+
+# NEW: Website API Configuration
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
+}
+
+# NEW: CORS Configuration for API access
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",      # Local React development
+    "http://127.0.0.1:3000",     # Local React development
+]
+
+# Allow all origins in production (Railway will handle this securely)
+if not DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_CREDENTIALS = True
+
+# NEW: OpenRouter Configuration for Chatbot
+OPENROUTER_API_KEY = config('OPENROUTER_API_KEY', default='')
