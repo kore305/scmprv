@@ -15,10 +15,37 @@ def translate_text(text, dest_language):
         print(f"Translation error: {e}")
         return text
 
+def get_program_info(program_name, language='en'):
+    """Get information about a federal program"""
+    try:
+        # Try to find the program in the database
+        program = FederalProgram.objects.filter(name__icontains=program_name).first()
+        
+        if program:
+            message = f"✅ PROGRAM FOUND\n\n📋 Name: {program.name}\n🏢 Sector: {program.sector}\n🔗 Official Link: {program.link}"
+            if program.description:
+                message += f"\n📝 Description: {program.description}"
+        else:
+            # If not found in database, provide general guidance
+            message = f"❌ PROGRAM NOT FOUND\n\n'{program_name}' was not found in our database.\n\n💡 Tips:\n• Check spelling\n• Try shorter name (e.g., 'N-Power' instead of 'N-Power Program')\n• Contact relevant ministry directly\n\n🏛️ Common Programs:\n• N-Power\n• Anchor Borrowers\n• TraderMoni\n• MarketMoni\n• Conditional Cash Transfer"
+        
+        # Translate if needed
+        if language != 'en':
+            message = translate_text(message, language)
+            
+        return message
+        
+    except Exception as e:
+        print(f"Error getting program info: {e}")
+        base_message = f"⚠️ Error retrieving information for '{program_name}'. Please try again or contact support."
+        if language != 'en':
+            return translate_text(base_message, language)
+        return base_message
+
 def verify_link_virustotal(url):
     """Verify a URL using VirusTotal API - IMMEDIATE RESULTS VERSION"""
     if not VIRUSTOTAL_API_KEY:
-        return "❌ VirusTotal service is currently unavailable. Please try again later."
+        return "⚠️ VirusTotal service is currently unavailable. Please try again later."
     
     # Validate URL format
     if not url.startswith(('http://', 'https://')):
@@ -79,7 +106,7 @@ def verify_link_virustotal(url):
             analysis_date = datetime.fromtimestamp(last_analysis).strftime('%Y-%m-%d')
             
             if stats['malicious'] > 0:
-                return f"🚨 DANGEROUS LINK\n\n{stats['malicious']} security vendors flagged this as MALICIOUS!\nLast checked: {analysis_date}\n\n❌ AVOID THIS LINK"
+                return f"🚨 DANGEROUS LINK\n\n{stats['malicious']} security vendors flagged this as MALICIOUS!\nLast checked: {analysis_date}\n\n⛔ AVOID THIS LINK"
             elif stats['suspicious'] > 0:
                 return f"⚠️ SUSPICIOUS LINK\n\n{stats['suspicious']} vendors flagged this as suspicious.\nLast checked: {analysis_date}\n\n🔒 Proceed with extreme caution"
             elif stats['harmless'] > 0:
@@ -93,7 +120,7 @@ def verify_link_virustotal(url):
         
         else:
             # API error - fallback to basic analysis
-            return f"🔍 LINK ANALYSIS\n\nDomain: {domain}\n\nQuick Assessment:\n• {'✅ Known domain' if '.' in domain else '❌ Unusual domain'}\n• {'⚠️ Contains suspicious keywords' if any(kw in url.lower() for kw in suspicious_keywords) else '✅ No obvious red flags'}\n\n💡 Always verify URLs before clicking!"
+            return f"🔍 LINK ANALYSIS\n\nDomain: {domain}\n\nQuick Assessment:\n• {'✅ Known domain' if '.' in domain else '⛔ Unusual domain'}\n• {'⚠️ Contains suspicious keywords' if any(kw in url.lower() for kw in suspicious_keywords) else '✅ No obvious red flags'}\n\n💡 Always verify URLs before clicking!"
                 
     except requests.exceptions.Timeout:
         return "⏰ Service timeout. Using quick safety check...\n\n💡 Always:\n• Verify URLs before clicking\n• Don't enter personal info on unfamiliar sites\n• Use official government websites"
