@@ -1,101 +1,198 @@
-import requests
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 from decouple import config
-from googletrans import Translator
-from .models import FederalProgram
+import requests
+import time
+from .models import WhatsAppSession
+from .utils import verify_link_virustotal, get_program_info, translate_text
 
-VIRUSTOTAL_API_KEY = config('VIRUSTOTAL_API_KEY', default='')
+# Twilio configuration
+TWILIO_ACCOUNT_SID = config('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN')
+TWILIO_WHATSAPP_NUMBER = config('TWILIO_WHATSAPP_NUMBER')
 
-def translate_text(text, dest_language):
-    """Translate text to the specified language"""
+def send_whatsapp_message(to_number, message):
+    """Send message using Twilio API directly"""
     try:
-        translator = Translator()
-        translation = translator.translate(text, dest=dest_language)
-        return translation.text
-    except Exception as e:
-        print(f"Translation error: {e}")
-        return text
-
-def verify_link_virustotal(url):
-    """Verify a URL using VirusTotal API - IMMEDIATE RESULTS VERSION"""
-    if not VIRUSTOTAL_API_KEY:
-        return "❌ VirusTotal service is currently unavailable. Please try again later."
-    
-    # Validate URL format
-    if not url.startswith(('http://', 'https://')):
-        url = 'https://' + url
-    
-    headers = {
-        "x-apikey": VIRUSTOTAL_API_KEY,
-        "User-Agent": "Federal-Programs-Bot/1.0"
-    }
-    
-    try:
-        print(f"Analyzing URL: {url}")
+        url = f"https://api.twilio.com/2010-04-01/Accounts/{TWILIO_ACCOUNT_SID}/Messages.json"
         
-        # Extract domain for basic safety check
-        from urllib.parse import urlparse
-        domain = urlparse(url).netloc.lower()
+        auth = (TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
         
-        # List of known safe Nigerian government domains
-        safe_ng_domains = [
-            'gov.ng', 'n-sip.gov.ng', 'statehouse.gov.ng', 'cbn.gov.ng',
-            'ncdc.gov.ng', 'nphcda.gov.ng', 'nysc.gov.ng', 'nddc.gov.ng',
-            'tetfund.gov.ng', 'boi.ng', 'rea.gov.ng'
-        ]
+        data = {
+            'From': f'whatsapp:{TWILIO_WHATSAPP_NUMBER}',
+            'To': f'whatsapp:{to_number}',
+            'Body': message
+        }
         
-        # List of generally safe global domains
-        safe_global_domains = [
-            'google.com', 'github.com', 'wikipedia.org', 'microsoft.com',
-            'apple.com', 'facebook.com', 'instagram.com', 'twitter.com',
-            'youtube.com', 'whatsapp.com'
-        ]
+        response = requests.post(url, auth=auth, data=data)
         
-        # Check if it's a known safe domain
-        if any(safe_domain in domain for safe_domain in safe_ng_domains):
-            return f"✅ SAFE LINK\n\nThis is a verified Nigerian government website ({domain}). Generally safe for official use."
-        
-        if any(safe_domain in domain for safe_domain in safe_global_domains):
-            return f"✅ LIKELY SAFE\n\nThis is a well-known website ({domain}). Generally safe but always exercise caution."
-        
-        # Check for suspicious patterns
-        suspicious_keywords = ['login', 'password', 'bank', 'verify', 'secure', 'account', 'pay']
-        if any(keyword in url.lower() for keyword in suspicious_keywords):
-            return f"⚠️ SUSPICIOUS PATTERN\n\nThis link contains keywords commonly used in phishing attempts. Be very careful about entering personal information."
-        
-        # Now check VirusTotal for existing analysis
-        url_id = requests.utils.quote(url, safe='')
-        analysis_url = f"https://www.virustotal.com/api/v3/urls/{url_id}"
-        
-        response = requests.get(analysis_url, headers=headers, timeout=10)
-        
-        if response.status_code == 200:
-            # Existing analysis found - provide immediate results
-            result = response.json()
-            stats = result['data']['attributes']['last_analysis_stats']
-            last_analysis = result['data']['attributes']['last_analysis_date']
-            
-            # Convert timestamp to readable date
-            from datetime import datetime
-            analysis_date = datetime.fromtimestamp(last_analysis).strftime('%Y-%m-%d')
-            
-            if stats['malicious'] > 0:
-                return f"🚨 DANGEROUS LINK\n\n{stats['malicious']} security vendors flagged this as MALICIOUS!\nLast checked: {analysis_date}\n\n❌ AVOID THIS LINK"
-            elif stats['suspicious'] > 0:
-                return f"⚠️ SUSPICIOUS LINK\n\n{stats['suspicious']} vendors flagged this as suspicious.\nLast checked: {analysis_date}\n\n🔒 Proceed with extreme caution"
-            elif stats['harmless'] > 0:
-                return f"✅ SAFE LINK\n\n{stats['harmless']} vendors marked this as harmless.\nLast checked: {analysis_date}\n\nGenerally safe to use"
-            else:
-                return f"🔍 UNKNOWN LINK\n\nNo security analysis available yet.\n\nSubmit for analysis or exercise caution."
-        
-        elif response.status_code == 404:
-            # No existing analysis - provide quick safety tips
-            return f"🔍 NEW LINK ANALYSIS\n\nThis link hasn't been analyzed yet.\n\nDomain: {domain}\n\n💡 Safety Tips:\n• Check the URL carefully before clicking\n• Don't enter personal information\n• Use official websites when possible\n\nYou can submit it for analysis by verifying this link again in 2-3 minutes."
-        
+        if response.status_code == 201:
+            print("✓ Message sent successfully")
+            return True
         else:
-            # API error - fallback to basic analysis
-            return f"🔍 LINK ANALYSIS\n\nDomain: {domain}\n\nQuick Assessment:\n• {'✅ Known domain' if '.' in domain else '❌ Unusual domain'}\n• {'⚠️ Contains suspicious keywords' if any(kw in url.lower() for kw in suspicious_keywords) else '✅ No obvious red flags'}\n\n💡 Always verify URLs before clicking!"
-                
-    except requests.exceptions.Timeout:
-        return "⏰ Service timeout. Using quick safety check...\n\n💡 Always:\n• Verify URLs before clicking\n• Don't enter personal info on unfamiliar sites\n• Use official government websites"
+            print(f"✗ Twilio API error: {response.status_code}")
+            return False
+            
     except Exception as e:
-        return f"🔍 Basic Link Check\n\nUnable to perform full analysis. \n\nQuick Tips:\n• Check if the URL looks legitimate\n• Look for misspellings or unusual characters\n• When in doubt, don't click!"
+        print(f"✗ Error sending message: {e}")
+        return False
+
+def get_main_menu_message():
+    """Main menu for the bot"""
+    return """Welcome to Federal Programs Info Service! 📊
+
+What would you like to do?
+1. 🔗 Verify a link safety
+2. ℹ️ Get program information  
+3. 🌐 Change language
+
+Reply with 1, 2, or 3"""
+
+@csrf_exempt
+def whatsapp_webhook(request):
+    """Handle incoming WhatsApp messages"""
+    
+    # Handle GET request (Twilio webhook verification)
+    if request.method == 'GET':
+        print("✓ GET request - Webhook verification")
+        return HttpResponse("Webhook verified!")
+    
+    # Handle POST request (messages)
+    elif request.method == 'POST':
+        print("✓ POST request - Message received")
+        
+        try:
+            data = request.POST
+            from_number = data.get('From', '').replace('whatsapp:', '')
+            message_body = data.get('Body', '').strip().lower()
+            
+            print(f"📩 Message from {from_number}: {message_body}")
+            
+            # Get or create session
+            session, created = WhatsAppSession.objects.get_or_create(phone_number=from_number)
+            
+            # Handle language selection
+            if message_body in ['english', 'igbo', 'hausa', 'yoruba', 'en', 'ig', 'ha', 'yo']:
+                lang_map = {'english': 'en', 'igbo': 'ig', 'hausa': 'ha', 'yoruba': 'yo', 
+                           'en': 'en', 'ig': 'ig', 'ha': 'ha', 'yo': 'yo'}
+                session.language = lang_map[message_body]
+                session.current_step = 'main_menu'
+                session.save()
+                send_whatsapp_message(from_number, f"✓ Language set to {message_body.capitalize()}! 🌍")
+                time.sleep(1)
+                send_whatsapp_message(from_number, get_main_menu_message())
+                return HttpResponse("OK")
+            
+            # Handle "menu" command from any state
+            if message_body == 'menu':
+                session.current_step = 'main_menu'
+                session.save()
+                send_whatsapp_message(from_number, get_main_menu_message())
+                return HttpResponse("OK")
+            
+            # Handle main menu options
+            if session.current_step == 'main_menu':
+                if message_body in ['1', 'verify', 'verify link', 'link']:
+                    session.current_step = 'awaiting_link'
+                    session.save()
+                    send_whatsapp_message(from_number, "🔗 Please paste the link you want to verify:\n\nExample: https://google.com\n\nType 'menu' to go back")
+                    
+                elif message_body in ['2', 'info', 'information', 'program']:
+                    session.current_step = 'awaiting_program'
+                    session.save()
+                    send_whatsapp_message(from_number, "ℹ️ Please enter the program name:\n\nExamples:\n- N-Power\n- Anchor Borrowers\n- Conditional Cash Transfer\n\nType 'menu' to go back")
+                    
+                elif message_body in ['3', 'language', 'change language']:
+                    session.current_step = 'awaiting_language'
+                    session.save()
+                    send_whatsapp_message(from_number, "🌐 Choose your language:\n\n1. English\n2. Igbo\n3. Hausa\n4. Yoruba\n\nType 'menu' to go back")
+                    
+                else:
+                    # Show main menu for any other message
+                    send_whatsapp_message(from_number, get_main_menu_message())
+            
+            # Handle link verification
+            elif session.current_step == 'awaiting_link':
+                # Send immediate acknowledgment
+                send_whatsapp_message(from_number, "⏳ Analyzing your link... Please wait a moment.")
+                
+                # Process the link analysis
+                result = verify_link_virustotal(message_body)
+                
+                # Send the result
+                send_whatsapp_message(from_number, result)
+                
+                # Wait a moment
+                time.sleep(2)
+                
+                # Offer next steps
+                send_whatsapp_message(from_number, "What would you like to do next?\n\n1. Verify another link\n2. Get program info\n3. Main menu\n\nOr type 'menu' for main menu")
+                
+                # Stay in link mode for quick follow-up
+                session.current_step = 'awaiting_link_followup'
+                session.save()
+                
+            # Handle link verification follow-up
+            elif session.current_step == 'awaiting_link_followup':
+                if message_body in ['1', 'another', 'verify']:
+                    session.current_step = 'awaiting_link'
+                    session.save()
+                    send_whatsapp_message(from_number, "🔗 Please paste the next link you want to verify:")
+                elif message_body in ['2', 'info', 'program']:
+                    session.current_step = 'awaiting_program'
+                    session.save()
+                    send_whatsapp_message(from_number, "ℹ️ Please enter the program name:")
+                elif message_body in ['3', 'menu']:
+                    session.current_step = 'main_menu'
+                    session.save()
+                    send_whatsapp_message(from_number, get_main_menu_message())
+                else:
+                    session.current_step = 'main_menu'
+                    session.save()
+                    send_whatsapp_message(from_number, get_main_menu_message())
+                
+            # Handle program information request
+            elif session.current_step == 'awaiting_program':
+                # Send processing message
+                send_whatsapp_message(from_number, "🔍 Searching for program information...")
+                
+                result = get_program_info(message_body, session.language)
+                send_whatsapp_message(from_number, result)
+                
+                # Return to main menu
+                session.current_step = 'main_menu'
+                session.save()
+                time.sleep(2)
+                send_whatsapp_message(from_number, get_main_menu_message())
+                
+            # Handle language change
+            elif session.current_step == 'awaiting_language':
+                lang_options = {'1': 'en', '2': 'ig', '3': 'ha', '4': 'yo'}
+                if message_body in lang_options:
+                    session.language = lang_options[message_body]
+                    session.current_step = 'main_menu'
+                    session.save()
+                    lang_names = {'en': 'English', 'ig': 'Igbo', 'ha': 'Hausa', 'yo': 'Yoruba'}
+                    send_whatsapp_message(from_number, f"✅ Language set to {lang_names[session.language]}!")
+                    time.sleep(1)
+                    send_whatsapp_message(from_number, get_main_menu_message())
+                else:
+                    send_whatsapp_message(from_number, "❌ Invalid choice. Please select 1, 2, 3, or 4")
+                    send_whatsapp_message(from_number, "🌐 Choose your language:\n1. English\n2. Igbo\n3. Hausa\n4. Yoruba")
+            
+            return HttpResponse("OK")
+            
+        except Exception as e:
+            print(f"✗ Error: {e}")
+            # Reset session on error
+            try:
+                session.current_step = 'main_menu'
+                session.save()
+                send_whatsapp_message(from_number, "❌ An error occurred. Returning to main menu.")
+                time.sleep(1)
+                send_whatsapp_message(from_number, get_main_menu_message())
+            except:
+                pass
+            return HttpResponse("Error", status=500)
+    
+    return HttpResponse("Method not allowed", status=405)
