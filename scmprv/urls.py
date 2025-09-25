@@ -23,8 +23,9 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('whatsapp/', include('whatsapp_verifier.urls')),
-    path('api/', include('website_api.urls')),
+    path("", include("website.urls")),
+
     
     # NEW: Serve React App (catch-all for frontend routing)
-    path('', TemplateView.as_view(template_name='index.html'), name='home'),
+    # path('', TemplateView.as_view(template_name='index.html'), name='home'),
 ]

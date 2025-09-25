@@ -1,0 +1,153 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GDS Verified Schemes</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#17cf17",
+            "background-light": "#f6f8f6",
+            "background-dark": "#112111",
+            "content-light": "#0e1b0e",
+            "content-dark": "#e3f3e3",
+            "subtle-light": "#d0e7d0",
+            "subtle-dark": "#2a3c2a",
+          },
+          fontFamily: {
+            display: ["Public Sans", "sans-serif"]
+          },
+          borderRadius: {
+            DEFAULT: "0.5rem",
+            lg: "0.75rem",
+            xl: "1rem",
+            full: "9999px"
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-content-light dark:text-content-dark">
+<div class="relative min-h-screen w-full flex flex-col">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm">
+    <div class="container mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 text-primary">
+          <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+            <path d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z" fill="currentColor"/>
+          </svg>
+        </div>
+        <h2 class="text-xl font-bold">GDS Verified Schemes</h2>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow">
+    <!-- Hero -->
+    <section class="relative py-20 sm:py-28 md:py-32 flex items-center justify-center text-center">
+      <div class="relative z-10 container mx-auto px-6">
+        <div class="max-w-3xl mx-auto">
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight">
+            Empowering Citizens with Verified Government Information
+          </h1>
+          <p class="mt-6 text-lg md:text-xl max-w-2xl mx-auto text-content-light/80 dark:text-content-dark/80">
+            Access accurate and up-to-date information on government initiatives, services, and resources through our trusted platform.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Feature Cards -->
+    <section class="py-16 sm:py-24 bg-background-light dark:bg-background-dark">
+      <div class="container mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Verify Links -->
+          <a href="{% url 'verify_link' %}" class="bg-white dark:bg-subtle-dark p-8 rounded-xl border border-subtle-light dark:border-subtle-dark flex flex-col items-center text-center hover:shadow-lg transition-shadow">
+            <div class="p-4 rounded-full bg-primary/10 mb-4">
+              <span class="material-symbols-outlined text-primary text-4xl">link</span>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Verify Links</h3>
+            <p class="text-content-light/80 dark:text-content-dark/80">Check if a link is from a verified government source.</p>
+          </a>
+
+          <!-- Report Scam -->
+          <a href="{% url 'report_scam' %}" class="bg-white dark:bg-subtle-dark p-8 rounded-xl border border-subtle-light dark:border-subtle-dark flex flex-col items-center text-center hover:shadow-lg transition-shadow">
+            <div class="p-4 rounded-full bg-primary/10 mb-4">
+              <span class="material-symbols-outlined text-primary text-4xl">report</span>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Report Scam</h3>
+            <p class="text-content-light/80 dark:text-content-dark/80">Report suspicious websites or messages to protect others.</p>
+          </a>
+
+          <!-- Initiatives -->
+          <a href="{% url 'initiatives' %}" class="bg-white dark:bg-subtle-dark p-8 rounded-xl border border-subtle-light dark:border-subtle-dark flex flex-col items-center text-center hover:shadow-lg transition-shadow">
+            <div class="p-4 rounded-full bg-primary/10 mb-4">
+              <span class="material-symbols-outlined text-primary text-4xl">verified</span>
+            </div>
+            <h3 class="text-xl font-bold mb-2">View Verified Initiatives</h3>
+            <p class="text-content-light/80 dark:text-content-dark/80">Explore official government programs and services.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Access Channels -->
+    <section class="py-16 sm:py-24">
+      <div class="container mx-auto px-6">
+        <div class="text-center max-w-3xl mx-auto">
+          <h2 class="text-3xl md:text-4xl font-bold">Access Information Through Multiple Channels</h2>
+        </div>
+        <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- USSD -->
+          <div class="bg-background-light dark:bg-subtle-dark border border-subtle-light dark:border-subtle-dark p-6 rounded-xl text-center hover:shadow-lg">
+            <h3 class="text-lg font-bold">USSD Service</h3>
+            <p class="text-sm">Dial *123*456# to access information, no internet required.</p>
+          </div>
+          <!-- WhatsApp Bot -->
+          <div class="bg-background-light dark:bg-subtle-dark border border-subtle-light dark:border-subtle-dark p-6 rounded-xl text-center hover:shadow-lg">
+            <h3 class="text-lg font-bold">WhatsApp Bot</h3>
+            <p class="text-sm">Chat with our bot on WhatsApp for instant answers.</p>
+          </div>
+          <!-- AI Chatbot -->
+          <a href="{% url 'resources' %}" class="bg-background-light dark:bg-subtle-dark border border-subtle-light dark:border-subtle-dark p-6 rounded-xl text-center hover:shadow-lg block">
+            <h3 class="text-lg font-bold">AI Chatbot</h3>
+            <p class="text-sm">Engage with our AI-powered assistant 24/7.</p>
+          </a>
+          <!-- Resources -->
+          <a href="{% url 'resources' %}" class="bg-background-light dark:bg-subtle-dark border border-subtle-light dark:border-subtle-dark p-6 rounded-xl text-center hover:shadow-lg block">
+            <h3 class="text-lg font-bold">Educational Resources</h3>
+            <p class="text-sm">Explore guides and FAQs to stay informed.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-background-light dark:bg-subtle-dark border-t border-subtle-light dark:border-subtle-dark">
+    <div class="container mx-auto px-6 py-8 text-center">
+      <p class="text-sm">© 2025 GDS Verified Schemes. All rights reserved.</p>
+    </div>
+  </footer>
+</div>
+</body>
+</html>

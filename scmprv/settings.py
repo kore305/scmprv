@@ -33,11 +33,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',          # NEW: For website APIs
+    'rest_framework',
+    'website',          
     'corsheaders',            # NEW: For React communication
     'whatsapp_verifier',      # Your existing WhatsApp bot
     'model_utils',
-    'website_api',            # NEW: Website functionality
+             # NEW: Website functionality
 ]
 
 # Update middleware for website support
