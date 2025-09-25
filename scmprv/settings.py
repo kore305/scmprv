@@ -60,7 +60,6 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / 'frontend' / 'build',  # NEW: For React production build
         ],
         'APP_DIRS': True,
         'OPTIONS': {
