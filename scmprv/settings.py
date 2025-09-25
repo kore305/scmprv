@@ -15,7 +15,10 @@ DEBUG =True
 
 # Railway will handle host restrictions in production
 ALLOWED_HOSTS = ['*']
-
+CSRF_TRUSTED_ORIGINS = [
+    'https://scmprv-production.up.railway.app',
+    # Add other domains if needed
+]
 # Installed apps
 INSTALLED_APPS = [
     'django.contrib.admin',
