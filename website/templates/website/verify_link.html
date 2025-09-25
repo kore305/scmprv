@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Verify Link - GDS Verified Schemes</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+
+  <div class="max-w-xl mx-auto py-12 px-6">
+    <h1 class="text-3xl font-bold text-center mb-6">Verify a Link</h1>
+
+    <form method="post" class="space-y-4 bg-white p-6 rounded-lg shadow">
+      {% csrf_token %}
+      {{ form.url }}
+      <button type="submit"
+        class="w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700">
+        Check Link
+      </button>
+    </form>
+
+    {% if result %}
+      <div class="mt-6 p-6 rounded-lg shadow bg-white">
+        <h2 class="text-xl font-bold mb-4">Result</h2>
+
+        <!-- Google Safe Browsing -->
+        {% if result.safe_browsing.error %}
+          <p class="text-red-600 font-semibold">⚠️ Error: {{ result.safe_browsing.error }}</p>
+        {% elif result.safe_browsing.safe %}
+          <p class="text-green-600 font-semibold">✅ This link appears safe (Google Safe Browsing)</p>
+        {% else %}
+          <p class="text-red-600 font-semibold">❌ This link may be unsafe (Google Safe Browsing)</p>
+        {% endif %}
+
+        <!-- FederalProgram Database -->
+        {% if result.program %}
+          <p class="mt-4 text-blue-600 font-semibold">
+            ✅ This link matches a verified government program: {{ result.program.name }}
+          </p>
+        {% else %}
+          <p class="mt-4 text-gray-700">
+            ℹ️ This link is not in our government programs database.
+          </p>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+</body>
+</html>
