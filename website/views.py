@@ -43,23 +43,46 @@ def initiatives(request):
 
 def resources(request):
     return render(request, "website/resources.html")
+
+
+
 @csrf_exempt
 def chatbot(request):
     if request.method == "POST":
         user_message = request.POST.get("message", "")
-        if not user_message:
-            return JsonResponse({"reply": "Please type a message."})
 
-        # First search database
+        # User bubble
+        user_html = f"""
+        <div class="flex justify-end mb-2">
+            <div class="bg-green-600 text-white p-3 rounded-2xl max-w-xs shadow">
+                {user_message}
+            </div>
+        </div>
+        """
+
+        # DB search
         programs = search_programs_in_db(user_message)
+        db_reply = ""
         if programs.exists():
-            reply = "Here are some programs I found:\n\n"
+            db_reply += "<p class='font-semibold mb-2'>✅ Related programs:</p>"
             for p in programs:
-                reply += f"🔹 {p.name} ({p.agency})\n{p.description}\n\n"
-            return JsonResponse({"reply": reply})
+                db_reply += f"<div class='mb-2'><strong>{p.name}</strong> ({p.agency})<br>{p.description}</div>"
+        else:
+            db_reply = "<p class='text-gray-600'>ℹ️ No direct matches in the database.</p>"
 
-        # Else fallback to OpenRouter
-        reply = query_openrouter(user_message)
-        return JsonResponse({"reply": reply})
+        # AI reply
+        ai_reply = query_openrouter(user_message)
+
+        # Bot bubble
+        bot_html = f"""
+        <div class="flex justify-start mb-4">
+            <div class="bg-gray-200 text-gray-900 p-3 rounded-2xl max-w-xs shadow">
+                {db_reply}
+                <div class="mt-2 text-sm text-gray-800">{ai_reply}</div>
+            </div>
+        </div>
+        """
+
+        return HttpResponse(user_html + bot_html)
 
     return render(request, "website/chatbot.html")

@@ -12,11 +12,17 @@
   <div class="max-w-2xl mx-auto py-12 px-4">
     <h1 class="text-3xl font-bold text-center mb-6">GDS Verified Schemes Chatbot</h1>
 
-    <div id="chat-box" class="bg-white border rounded-lg shadow p-4 h-96 overflow-y-scroll">
+    <!-- Chat box -->
+    <div id="chat-box" class="bg-white border rounded-lg shadow p-4 h-96 overflow-y-scroll space-y-2">
       <!-- Messages will appear here -->
     </div>
 
-    <form id="chat-form" hx-post="{% url 'chatbot' %}" hx-target="#chat-box" hx-swap="beforeend"
+    <!-- Chat form -->
+    <form id="chat-form" 
+          hx-post="{% url 'chatbot' %}" 
+          hx-target="#chat-box" 
+          hx-swap="beforeend"
+          hx-on::after-request="this.reset()"
           class="flex mt-4 space-x-2">
       {% csrf_token %}
       <input type="text" name="message" placeholder="Type your question..."
@@ -30,6 +36,7 @@
   </div>
 
   <script>
+    // Auto-scroll to bottom after each response
     document.body.addEventListener("htmx:afterRequest", function(evt) {
       const chatBox = document.getElementById("chat-box");
       chatBox.scrollTop = chatBox.scrollHeight;
