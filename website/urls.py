@@ -3,8 +3,8 @@ from . import views
 
 urlpatterns = [
     path("", views.landing_page, name="landing"),
-    # path("verify-link/", views.verify_link, name="verify_link"),
-    # path("report-scam/", views.report_scam, name="report_scam"),
-    # path("initiatives/", views.initiatives, name="initiatives"),
-    # path("resources/", views.resources, name="resources"),
+    path("verify-link/", views.verify_link, name="verify_link"),
+    path("report-scam/", views.report_scam, name="report_scam"),
+    path("initiatives/", views.initiatives, name="initiatives"),
+    path("resources/", views.resources, name="resources"),
 ]
