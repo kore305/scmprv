@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .forms import LinkCheckForm
+from django.views.decorators.csrf import csrf_exempt
 from .utils import check_url_with_google_safe_browsing, extract_domain
 from whatsapp_verifier.models import FederalProgram
 from .utils_chatbot import query_openrouter, search_programs_in_db
