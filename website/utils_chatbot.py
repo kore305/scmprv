@@ -1,17 +1,14 @@
+import os
 import requests
-from decouple import config
-from whatsapp_verifier.models import FederalProgram
 
-OPENROUTER_API_KEY = config("OPENROUTER_API_KEY")
-
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 
 def query_openrouter(message, language="en"):
-    """
-    Query OpenRouter API with multilingual support.
-    """
     url = "https://openrouter.ai/api/v1/chat/completions"
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "HTTP-Referer": "https://scmprv-production.up.railway.app",   # ✅ required
+        "X-Title": "GDS Verified Schemes Chatbot", # ✅ required
         "Content-Type": "application/json",
     }
 
@@ -22,7 +19,7 @@ def query_openrouter(message, language="en"):
     """
 
     payload = {
-        "model": "openai/gpt-4o-mini",   # 🔑 multilingual & affordable
+        "model": "openai/gpt-4o-mini",
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": message},
@@ -37,18 +34,3 @@ def query_openrouter(message, language="en"):
         return f"⚠️ Error: {response.status_code} - {response.text}"
     except Exception as e:
         return f"⚠️ Error: {str(e)}"
-
-
-def search_programs_in_db(query):
-    """
-    Search for relevant programs in the FederalProgram database.
-    Matches against name, description, or agency.
-    """
-    results = FederalProgram.objects.filter(
-        name__icontains=query
-    ) | FederalProgram.objects.filter(
-        description__icontains=query
-    ) | FederalProgram.objects.filter(
-        agency__icontains=query
-    )
-    return results[:5]  
