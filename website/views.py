@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .forms import LinkCheckForm
 from .utils import check_url_with_google_safe_browsing, extract_domain
 from whatsapp_verifier.models import FederalProgram
+from .utils_chatbot import query_openrouter, search_programs_in_db
 # Create your views here.
 
 def landing_page(request):
@@ -41,3 +42,23 @@ def initiatives(request):
 
 def resources(request):
     return render(request, "website/resources.html")
+@csrf_exempt
+def chatbot(request):
+    if request.method == "POST":
+        user_message = request.POST.get("message", "")
+        if not user_message:
+            return JsonResponse({"reply": "Please type a message."})
+
+        # First search database
+        programs = search_programs_in_db(user_message)
+        if programs.exists():
+            reply = "Here are some programs I found:\n\n"
+            for p in programs:
+                reply += f"🔹 {p.name} ({p.agency})\n{p.description}\n\n"
+            return JsonResponse({"reply": reply})
+
+        # Else fallback to OpenRouter
+        reply = query_openrouter(user_message)
+        return JsonResponse({"reply": reply})
+
+    return render(request, "website/chatbot.html")

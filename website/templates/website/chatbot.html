@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chatbot - GDS Verified Schemes</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+
+  <div class="max-w-2xl mx-auto py-12 px-4">
+    <h1 class="text-3xl font-bold text-center mb-6">GDS Verified Schemes Chatbot</h1>
+
+    <div id="chat-box" class="bg-white border rounded-lg shadow p-4 h-96 overflow-y-scroll">
+      <!-- Messages will appear here -->
+    </div>
+
+    <form id="chat-form" hx-post="{% url 'chatbot' %}" hx-target="#chat-box" hx-swap="beforeend"
+          class="flex mt-4 space-x-2">
+      {% csrf_token %}
+      <input type="text" name="message" placeholder="Type your question..."
+             class="flex-grow border rounded-lg p-2 focus:ring-2 focus:ring-green-500"
+             autocomplete="off">
+      <button type="submit"
+              class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+        Send
+      </button>
+    </form>
+  </div>
+
+  <script>
+    document.body.addEventListener("htmx:afterRequest", function(evt) {
+      const chatBox = document.getElementById("chat-box");
+      chatBox.scrollTop = chatBox.scrollHeight;
+    });
+  </script>
+</body>
+</html>
