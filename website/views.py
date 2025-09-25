@@ -1,51 +1,3 @@
-from django.shortcuts import render
-from .forms import LinkCheckForm
-from django.views.decorators.csrf import csrf_exempt
-from .utils import check_url_with_google_safe_browsing, extract_domain
-from whatsapp_verifier.models import FederalProgram
-from .utils_chatbot import query_openrouter, search_programs_in_db
-# Create your views here.
-
-def landing_page(request):
-    return render(request, "website/landing.html")
-
-def verify_link(request):
-    result = None
-    form = LinkCheckForm(request.POST or None)
-
-    if request.method == "POST" and form.is_valid():
-        url = form.cleaned_data["url"]
-
-        # Check with Google Safe Browsing
-        safe_browsing_result = check_url_with_google_safe_browsing(url)
-
-        # Extract domain from input
-        domain = extract_domain(url)
-
-        # Match domain against FederalProgram.link field
-        program = FederalProgram.objects.filter(link__icontains=domain).first()
-
-        result = {
-            "safe_browsing": safe_browsing_result,
-            "program": program,
-        }
-
-    return render(request, "website/verify_link.html", {
-        "form": form,
-        "result": result,
-    })
-
-def report_scam(request):
-    return render(request, "website/report_scam.html")
-
-def initiatives(request):
-    return render(request, "website/initiatives.html")
-
-def resources(request):
-    return render(request, "website/resources.html")
-
-
-
 @csrf_exempt
 def chatbot(request):
     if request.method == "POST":
@@ -54,7 +6,7 @@ def chatbot(request):
         # User bubble
         user_html = f"""
         <div class="flex justify-end mb-2">
-            <div class="bg-green-600 text-white p-3 rounded-2xl max-w-xs shadow">
+            <div class="bg-green-600 text-white p-3 rounded-2xl max-w-xs shadow text-sm">
                 {user_message}
             </div>
         </div>
@@ -64,11 +16,11 @@ def chatbot(request):
         programs = search_programs_in_db(user_message)
         db_reply = ""
         if programs.exists():
-            db_reply += "<p class='font-semibold mb-2'>✅ Related programs:</p>"
+            db_reply += "<p class='font-semibold mb-1'>✅ Related programs:</p>"
             for p in programs:
-                db_reply += f"<div class='mb-2'><strong>{p.name}</strong> ({p.agency})<br>{p.description}</div>"
+                db_reply += f"<div class='mb-2 text-sm'><strong>{p.name}</strong> ({p.agency})<br>{p.description}</div>"
         else:
-            db_reply = "<p class='text-gray-600'>ℹ️ No direct matches in the database.</p>"
+            db_reply = "<p class='text-gray-600 text-sm'>ℹ️ No direct matches in the database.</p>"
 
         # AI reply
         ai_reply = query_openrouter(user_message)
@@ -76,9 +28,9 @@ def chatbot(request):
         # Bot bubble
         bot_html = f"""
         <div class="flex justify-start mb-4">
-            <div class="bg-gray-200 text-gray-900 p-3 rounded-2xl max-w-xs shadow">
+            <div class="bg-gray-200 text-gray-900 p-3 rounded-2xl max-w-xs shadow text-sm">
                 {db_reply}
-                <div class="mt-2 text-sm text-gray-800">{ai_reply}</div>
+                <div class="mt-2 text-gray-800">{ai_reply}</div>
             </div>
         </div>
         """
