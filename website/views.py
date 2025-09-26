@@ -17,8 +17,22 @@ def verify_link(request):
     if request.method == "POST" and form.is_valid():
         url = form.cleaned_data["url"]
 
-        # Check with VirusTotal instead of Google Safe Browsing
-        vt_result = check_url_with_virustotal(url)
+        # --- VirusTotal check (inline) ---
+        headers = {
+            "x-apikey": settings.VIRUSTOTAL_API_KEY
+        }
+        url_id = base64.urlsafe_b64encode(url.encode()).decode().strip("=")
+        vt_response = requests.get(
+            f"https://www.virustotal.com/api/v3/urls/{url_id}",
+            headers=headers
+        )
+        if vt_response.status_code == 200:
+            vt_result = vt_response.json()
+        else:
+            vt_result = {
+                "error": f"VirusTotal API error {vt_response.status_code}",
+                "details": vt_response.text,
+            }
 
         # Extract domain from input
         domain = extract_domain(url)
@@ -27,7 +41,7 @@ def verify_link(request):
         program = FederalProgram.objects.filter(link__icontains=domain).first()
 
         result = {
-            "virustotal": vt_result,   # renamed for clarity
+            "virustotal": vt_result,
             "program": program,
         }
 
