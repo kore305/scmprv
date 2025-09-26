@@ -2,85 +2,166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Chatbot - GDS Verified Schemes</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GovAssist Chatbot</title>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://unpkg.com/htmx.org@1.9.6"></script>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#17cf17",
+            "background-light": "#f6f8f6",
+            "background-dark": "#112111",
+          },
+          fontFamily: {
+            "display": ["Public Sans"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+</script>
+<style>
+    body {
+      font-family: 'Public Sans', sans-serif;
+    }
+</style>
 </head>
-<body class="bg-gray-100 text-gray-900">
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200">
+<div class="flex flex-col min-h-screen">
+<header class="flex items-center justify-between px-6 py-4 border-b border-primary/20 dark:border-primary/30">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-3xl">verified_user</span>
+<h1 class="text-xl font-bold text-gray-900 dark:text-white">GovAssist</h1>
+</div>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-sm font-medium hover:text-primary" href="#">Home</a>
+<a class="text-sm font-medium hover:text-primary" href="#">Verify</a>
+<a class="text-sm font-medium hover:text-primary" href="#">Report</a>
+<a class="text-sm font-medium hover:text-primary" href="#">Learn</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-primary/10">
+<span class="material-symbols-outlined">language</span>
+</button>
+<div class="w-10 h-10 bg-center bg-no-repeat bg-cover rounded-full" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCvEIIR-HAn9B06RcwycFbVm-EDwN0lD2qaC44bARILFB5gIePZiH3PKdsIfKHnSs99DjYmHEs7mA9I8jgTwUAMWNj2AU8_R86EWnCzpszaQGWZ6OYIlXjrhWoybG5Ovgf7UrgASmGk6SZkmu9AtviNsJuQYjU-lJVylOAU7Ck_FSceD5pFjRPMKUqen3hyois4vtJrOCmKWkhGsjoXYg6W3M7IEbSYw3MUv0Gw46VyTa5PsT63DsSYtSpyR6Rtw1k1M-EO9InRIbTn');"></div>
+</div>
+</header>
+<main class="flex-1 flex flex-col items-center justify-center p-4">
+<div class="w-full max-w-2xl flex flex-col h-[calc(100vh-220px)] bg-white dark:bg-background-dark border border-primary/20 dark:border-primary/30 rounded-lg shadow-lg">
+<div class="p-4 border-b border-primary/20 dark:border-primary/30">
+<h2 class="text-lg font-bold text-center text-gray-900 dark:text-white">Chat with GovAssist</h2>
+</div>
 
-  <div class="max-w-2xl mx-auto py-12 px-4">
-    <h1 class="text-3xl font-bold text-center mb-6">GDS Verified Schemes Chatbot</h1>
-
-    <!-- Chat box -->
-    <div id="chat-box" class="bg-white rounded-3xl shadow-lg p-6 h-96 overflow-y-scroll space-y-4">
-      <!-- Messages will appear here -->
-      <!-- Example message structure for reference:
-      <div class="flex justify-end">
-        <div class="bg-green-500 text-white px-4 py-3 rounded-2xl rounded-tr-md max-w-xs shadow-sm">
-          Your message here
-        </div>
+<!-- Chat Messages Area -->
+<div id="chat-box" class="flex-1 p-6 space-y-6 overflow-y-auto">
+  <!-- Initial Bot Message -->
+  <div class="flex items-start gap-3">
+    <div class="w-10 h-10 bg-center bg-no-repeat bg-cover rounded-full shrink-0" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBs9aFgYcQSqrRMAo-5XxAFn7-jaOLRDTaua9CoXNAkcCxPj6iHPtIcPbfN53IbuSxRdIFn7BIPelMSRhWsJ2O7RxZo2K0W5PmHDJ1GtSCo8-QSX5pv3wOMlI6OvWzYj7jipZ2nPxIMdB7hZrPwDgF5lgKYrx68j9ksRKNuI3oq0iM5Ukdj9Zlerk-spnQ_To4pfnEU7M0a9n02lT5V1dKgbx2DisrPHzsowpPemG16daaFz2PbE3NPkSqowrDuLNt8gv3UMEG5WNd1');"></div>
+    <div class="flex flex-col items-start">
+      <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">GovAssist AI</span>
+      <div class="mt-1 p-3 rounded-2xl rounded-tl-md bg-primary/10 dark:bg-primary/20 text-gray-800 dark:text-gray-200 max-w-md shadow-sm">
+        <p>Hi there! I'm here to help you navigate government initiatives and verify information. How can I assist you today?</p>
       </div>
-      <div class="flex justify-start">
-        <div class="bg-gray-200 text-gray-800 px-4 py-3 rounded-2xl rounded-tl-md max-w-xs shadow-sm">
-          Bot response here
-        </div>
-      </div>
-      -->
     </div>
-
-    <!-- Chat form -->
-    <form id="chat-form"
-          hx-post="{% url 'chatbot' %}"
-          hx-target="#chat-box"
-          hx-swap="beforeend"
-          hx-on::after-request="this.reset()"
-          class="flex mt-4 space-x-2">
-      {% csrf_token %}
-      <input type="text" name="message" placeholder="Type your question..."
-             class="flex-grow border-0 rounded-full p-4 focus:ring-2 focus:ring-green-500 bg-white shadow-sm"
-             autocomplete="off">
-      <button type="submit"
-              class="bg-green-500 text-white px-6 py-3 rounded-full hover:bg-green-600 shadow-sm">
-        Send
-      </button>
-    </form>
   </div>
+  
+  <!-- Dynamic messages will be added here via HTMX -->
+</div>
 
-  <script>
-    // Auto-scroll chat box to bottom after each reply
-    document.body.addEventListener("htmx:afterRequest", function() {
-      const chatBox = document.getElementById("chat-box");
-      chatBox.scrollTop = chatBox.scrollHeight;
-    });
+<!-- Chat Input Area -->
+<div class="p-4 border-t border-primary/20 dark:border-primary/30">
+  <form id="chat-form"
+        hx-post="{% url 'chatbot' %}"
+        hx-target="#chat-box"
+        hx-swap="beforeend"
+        hx-on::after-request="this.reset()"
+        class="flex items-center gap-3">
+    {% csrf_token %}
+    <input name="message" 
+           class="form-input flex-1 w-full px-4 py-3 rounded-full bg-background-light dark:bg-gray-800 border-primary/30 focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400" 
+           placeholder="Type your question here..." 
+           type="text"
+           autocomplete="off"/>
+    <button type="submit" class="px-6 py-3 rounded-full bg-primary text-white font-semibold hover:bg-opacity-90 shadow-sm">
+      Send
+    </button>
+  </form>
+  
+  <!-- Quick Action Buttons -->
+  <div class="flex justify-center gap-4 mt-4">
+    <button class="px-4 py-2 text-sm font-medium rounded-full border border-primary text-primary hover:bg-primary/10"
+            hx-post="{% url 'chatbot' %}"
+            hx-target="#chat-box"
+            hx-swap="beforeend"
+            hx-vals='{"message": "I need help with educational resources"}'>
+      Access Educational Resources
+    </button>
+    <button class="px-4 py-2 text-sm font-medium rounded-full border border-primary text-primary hover:bg-primary/10"
+            hx-post="{% url 'chatbot' %}"
+            hx-target="#chat-box"
+            hx-swap="beforeend"
+            hx-vals='{"message": "I want to report a scam"}'>
+      Report a Scam
+    </button>
+  </div>
+</div>
 
-    // Show loading animation when request starts
-    document.body.addEventListener("htmx:beforeRequest", function() {
-      const chatBox = document.getElementById("chat-box");
-      const loadingDiv = document.createElement("div");
-      loadingDiv.id = "loading-animation";
-      loadingDiv.innerHTML = `
-        <div class="flex justify-start">
-          <div class="bg-gray-200 px-4 py-3 rounded-2xl rounded-tl-md max-w-xs shadow-sm">
+</div>
+</main>
+</div>
+
+<script>
+  // Auto-scroll chat box to bottom after each reply
+  document.body.addEventListener("htmx:afterRequest", function() {
+    const chatBox = document.getElementById("chat-box");
+    chatBox.scrollTop = chatBox.scrollHeight;
+  });
+
+  // Show loading animation when request starts
+  document.body.addEventListener("htmx:beforeRequest", function() {
+    const chatBox = document.getElementById("chat-box");
+    const loadingDiv = document.createElement("div");
+    loadingDiv.id = "loading-animation";
+    loadingDiv.innerHTML = `
+      <div class="flex items-start gap-3">
+        <div class="w-10 h-10 bg-center bg-no-repeat bg-cover rounded-full shrink-0" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBs9aFgYcQSqrRMAo-5XxAFn7-jaOLRDTaua9CoXNAkcCxPj6iHPtIcPbfN53IbuSxRdIFn7BIPelMSRhWsJ2O7RxZo2K0W5PmHDJ1GtSCo8-QSX5pv3wOMlI6OvWzYj7jipZ2nPxIMdB7hZrPwDgF5lgKYrx68j9ksRKNuI3oq0iM5Ukdj9Zlerk-spnQ_To4pfnEU7M0a9n02lT5V1dKgbx2DisrPHzsowpPemG16daaFz2PbE3NPkSqowrDuLNt8gv3UMEG5WNd1');"></div>
+        <div class="flex flex-col items-start">
+          <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">GovAssist AI</span>
+          <div class="mt-1 p-3 rounded-2xl rounded-tl-md bg-primary/10 dark:bg-primary/20 max-w-md shadow-sm">
             <div class="flex space-x-1 items-center">
-              <div class="w-2 h-2 bg-green-500 rounded-full animate-bounce"></div>
-              <div class="w-2 h-2 bg-green-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-              <div class="w-2 h-2 bg-green-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+              <div class="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
+              <div class="w-2 h-2 bg-primary rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+              <div class="w-2 h-2 bg-primary rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
             </div>
           </div>
         </div>
-      `;
-      chatBox.appendChild(loadingDiv);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    });
+      </div>
+    `;
+    chatBox.appendChild(loadingDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  });
 
-    // Remove loading animation when request completes
-    document.body.addEventListener("htmx:afterRequest", function() {
-      const loadingDiv = document.getElementById("loading-animation");
-      if (loadingDiv) {
-        loadingDiv.remove();
-      }
-    });
-  </script>
+  // Remove loading animation when request completes
+  document.body.addEventListener("htmx:afterRequest", function() {
+    const loadingDiv = document.getElementById("loading-animation");
+    if (loadingDiv) {
+      loadingDiv.remove();
+    }
+  });
+</script>
+
 </body>
 </html>
