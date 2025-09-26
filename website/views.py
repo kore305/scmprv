@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .forms import LinkCheckForm
+import base64
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .utils import check_url_with_virustotal, extract_domain
