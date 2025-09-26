@@ -2,44 +2,24 @@ import requests
 from decouple import config
 from urllib.parse import urlparse
 import logging
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
 # Google Safe Browsing API key
-GOOGLE_SAFE_BROWSING_KEY = config("GOOGLE_SAFE_BROWSING_KEY", default="")
+VIRUSTOTAL_API_KEY = config("VIRUSTOTAL_API_KEY", default="")
 
-def check_url_with_google_safe_browsing(url: str) -> dict:
-    """
-    Check a URL against Google Safe Browsing API.
-    Returns dict with 'safe', 'error', or 'details'.
-    """
-    # Debug: Check if API key is loaded
-    if not GOOGLE_SAFE_BROWSING_KEY:
-        logger.error("GOOGLE_SAFE_BROWSING_KEY is empty or not set")
-        return {"error": "API key not configured"}
-    
-    logger.info(f"API Key length: {len(GOOGLE_SAFE_BROWSING_KEY)}")
-    logger.info(f"Checking URL: {url}")
-
-    api_url = f"https://safebrowsing.googleapis.com/v4/threatMatches:find?key={GOOGLE_SAFE_BROWSING_KEY}"
-
-    payload = {
-        "client": {
-            "clientId": "gds-verified-schemes",
-            "clientVersion": "1.0"
-        },
-        "threatInfo": {
-            "threatTypes": [
-                "MALWARE",
-                "SOCIAL_ENGINEERING",
-                "UNWANTED_SOFTWARE",
-                "POTENTIALLY_HARMFUL_APPLICATION"
-            ],
-            "platformTypes": ["ANY_PLATFORM"],
-            "threatEntryTypes": ["URL"],
-            "threatEntries": [{"url": url}]
-        }
+def check_url_with_virustotal(url):
+    headers = {
+        "x-apikey": settings.VIRUSTOTAL_API_KEY
     }
+    response = requests.get(
+        f"https://www.virustotal.com/api/v3/urls/{url}",
+        headers=headers
+    )
+    if response.status_code == 200:
+        return response.json()
+    return {"error": "Failed to fetch data from VirusTotal"}
 
     try:
         response = requests.post(api_url, json=payload, timeout=10)

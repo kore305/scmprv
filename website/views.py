@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .forms import LinkCheckForm
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from .utils import check_url_with_google_safe_browsing, extract_domain
+from .utils import check_url_with_virustotal, extract_domain
 from whatsapp_verifier.models import FederalProgram
 from .utils_chatbot import query_openrouter, search_programs_in_db
 # Create your views here.
@@ -17,8 +17,8 @@ def verify_link(request):
     if request.method == "POST" and form.is_valid():
         url = form.cleaned_data["url"]
 
-        # Check with Google Safe Browsing
-        safe_browsing_result = check_url_with_google_safe_browsing(url)
+        # Check with VirusTotal instead of Google Safe Browsing
+        vt_result = check_url_with_virustotal(url)
 
         # Extract domain from input
         domain = extract_domain(url)
@@ -27,7 +27,7 @@ def verify_link(request):
         program = FederalProgram.objects.filter(link__icontains=domain).first()
 
         result = {
-            "safe_browsing": safe_browsing_result,
+            "virustotal": vt_result,   # renamed for clarity
             "program": program,
         }
 
