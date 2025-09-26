@@ -24,7 +24,7 @@ def verify_link(request):
         }
         url_id = base64.urlsafe_b64encode(url.encode()).decode().strip("=")
         vt_response = requests.get(
-            f"https://www.virustotal.com/api/v3/urls/{url_id}",
+            f"https://www.virustotal.com/vtapi/v2/url/report{url_id}",
             headers=headers
         )
         if vt_response.status_code == 200:
