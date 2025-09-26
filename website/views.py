@@ -22,9 +22,9 @@ def verify_link(request):
         headers = {
             "x-apikey": settings.VIRUSTOTAL_API_KEY
         }
-        url_id = base64.urlsafe_b64encode(url.encode()).decode().strip("=")
+        url = base64.urlsafe_b64encode(url.encode()).decode().strip("=")
         vt_response = requests.get(
-            f"https://www.virustotal.com/vtapi/v2/url/report{url_id}",
+            f"https://www.virustotal.com/api/v3/urls{url}",
             headers=headers
         )
         if vt_response.status_code == 200:
@@ -55,7 +55,8 @@ def report_scam(request):
     return render(request, "website/report_scam.html")
 
 def initiatives(request):
-    return render(request, "website/initiatives.html")
+    programs = FederalProgram.objects.all().order_by('name')
+    return render(request, "website/initiatives.html", {"programs": programs})
 
 def resources(request):
     return render(request, "website/resources.html")

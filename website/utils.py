@@ -23,7 +23,7 @@ def check_url_with_virustotal(url: str):
 
     # Query VirusTotal
     response = requests.get(
-        f"https://www.virustotal.com/vtapi/v2/url/report{url_id}",
+        f"https://www.virustotal.com/api/v3/urls{url}",
         headers=headers
     )
 
