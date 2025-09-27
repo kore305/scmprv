@@ -43,15 +43,7 @@
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
 
-        .goog-te-combo {
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 8px;
-    font-size: 14px;
-}
-
-/* Hide Google branding */
+  /* Hide Google branding */
 .goog-te-banner-frame,
 .goog-te-banner-frame.skiptranslate {
     display: none !important;
@@ -60,33 +52,10 @@
 body { top: 0px !important; }
 body.goog-te-compat { position: static !important; }
 
-/* Style dropdown to match your design */
+/* Hide the actual Google dropdown since we're using our custom one */
 .goog-te-combo {
-    background-color: white;
-    border: 1px solid #d0e7d0;
-    border-radius: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-    font-family: 'Public Sans', sans-serif;
-    color: #0e1b0e;
-    transition: all 0.2s;
+    display: none !important;
 }
-
-.dark .goog-te-combo {
-    background-color: #2a3c2a;
-    border-color: #2a3c2a;
-    color: #e3f3e3;
-}
-
-.goog-te-combo:hover,
-.goog-te-combo:focus {
-    border-color: #17cf17;
-    outline: none;
-}
-
-/* Hide branding text */
-.goog-te-gadget span:not(.goog-te-combo) { display: none !important; }
-.goog-te-gadget > span > a, .goog-logo-link { display: none !important; }
     </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark font-display text-content-light dark:text-content-dark">
