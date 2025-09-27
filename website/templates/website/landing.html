@@ -41,10 +41,12 @@
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
-        /* Style Google Translate dropdown */
+
+
         #google_translate_element select {
-            @apply bg-white dark:bg-subtle-dark border border-subtle-light dark:border-subtle-dark rounded-lg px-2 py-1 text-sm text-content-light dark:text-content-dark focus:outline-none focus:ring-2 focus:ring-primary;
-        }
+    @apply bg-white dark:bg-subtle-dark border border-subtle-light dark:border-subtle-dark rounded-lg px-2 py-1 text-sm text-content-light dark:text-content-dark focus:outline-none focus:ring-2 focus:ring-primary;
+}
+
     </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark font-display text-content-light dark:text-content-dark">
@@ -62,32 +64,178 @@
                 <h2 class="text-xl font-bold">GDS Verified Schemes</h2>
             </div>
             
-            <!-- Search + Language + Theme -->
-            <div class="flex items-center gap-4 ml-4">
-                <!-- Search Bar -->
-                <div class="relative w-full max-w-xs">
-                    <input class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-subtle-dark border border-subtle-light dark:border-subtle-dark rounded-lg text-sm text-content-light dark:text-content-dark placeholder-content-light/50 dark:placeholder-content-dark/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="Search initiatives..." type="text"/>
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <span class="material-symbols-outlined text-content-light/50 dark:text-content-dark/50">
-                            search
-                        </span>
-                    </div>
+            <!-- Search Bar -->
+            <div class="relative w-full max-w-xs ml-4">
+                <input class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-subtle-dark border border-subtle-light dark:border-subtle-dark rounded-lg text-sm text-content-light dark:text-content-dark placeholder-content-light/50 dark:placeholder-content-dark/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="Search initiatives..." type="text"/>
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <span class="material-symbols-outlined text-content-light/50 dark:text-content-dark/50">
+                        search
+                    </span>
                 </div>
-
-                <!-- Language Switcher -->
-                <div id="google_translate_element" class="hidden sm:block"></div>
-
-                <!-- Dark mode toggle -->
-                <button id="theme-toggle" class="p-2 rounded-lg bg-subtle-light dark:bg-subtle-dark hover:bg-primary/20 transition-colors">
-                    <span class="material-symbols-outlined dark:hidden">dark_mode</span>
-                    <span class="material-symbols-outlined hidden dark:block">light_mode</span>
-                </button>
             </div>
+
+            <!-- Language Switcher -->
+            <div id="google_translate_element" class="ml-4"></div>
+
+            
+            <!-- Dark mode toggle -->
+            <button id="theme-toggle" class="p-2 rounded-lg bg-subtle-light dark:bg-subtle-dark hover:bg-primary/20 transition-colors ml-4">
+                <span class="material-symbols-outlined dark:hidden">dark_mode</span>
+                <span class="material-symbols-outlined hidden dark:block">light_mode</span>
+            </button>
         </div>
     </header>
 
     <main class="flex-grow">
-        <!-- (rest of your page stays unchanged) -->
+        <!-- Hero -->
+        <section class="relative py-20 sm:py-28 md:py-32 flex items-center justify-center text-center">
+            <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-background-light dark:to-background-dark"></div>
+            <div class="relative z-10 container mx-auto px-6">
+                <div class="max-w-3xl mx-auto">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight">
+                        Empowering Citizens with Verified Government Information
+                    </h1>
+                    <p class="mt-6 text-lg md:text-xl max-w-2xl mx-auto text-content-light/80 dark:text-content-dark/80">
+                        Access accurate and up-to-date information on government initiatives, services, and resources through our trusted platform.
+                    </p>
+                    <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="{% url 'verify_link' %}" class="inline-flex items-center justify-center bg-primary text-white font-bold text-base px-8 py-3.5 rounded-lg hover:bg-primary/90 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-background-light dark:focus:ring-offset-background-dark">
+                            Verify a Link Now
+                        </a>
+                        <a href="{% url 'initiatives' %}" class="inline-flex items-center justify-center bg-primary/20 dark:bg-primary/30 text-primary font-bold text-base px-8 py-3.5 rounded-lg hover:bg-primary/30 dark:hover:bg-primary/40 transition-all">
+                            Browse Initiatives
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature Cards -->
+        <section class="py-16 sm:py-24 bg-background-light dark:bg-background-dark">
+            <div class="container mx-auto px-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Verify Links -->
+                    <a href="{% url 'verify_link' %}" class="group bg-white dark:bg-subtle-dark p-8 rounded-xl border border-subtle-light dark:border-subtle-dark flex flex-col items-center text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                        <div class="p-4 rounded-full bg-primary/10 mb-4 group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-primary text-4xl">link</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Verify Links</h3>
+                        <p class="text-content-light/80 dark:text-content-dark/80">Check if a link is from a verified government source.</p>
+                        <span class="mt-4 text-primary font-medium flex items-center gap-1">
+                            Try it now
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                        </span>
+                    </a>
+
+                    <!-- Report Scam -->
+                    <a href="{% url 'report_scam' %}" class="group bg-white dark:bg-subtle-dark p-8 rounded-xl border border-subtle-light dark:border-subtle-dark flex flex-col items-center text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                        <div class="p-4 rounded-full bg-primary/10 mb-4 group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-primary text-4xl">report</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Report Scam</h3>
+                        <p class="text-content-light/80 dark:text-content-dark/80">Report suspicious websites or messages to protect others.</p>
+                        <span class="mt-4 text-primary font-medium flex items-center gap-1">
+                            Report an issue
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                        </span>
+                    </a>
+
+                    <!-- Initiatives -->
+                    <a href="{% url 'initiatives' %}" class="group bg-white dark:bg-subtle-dark p-8 rounded-xl border border-subtle-light dark:border-subtle-dark flex flex-col items-center text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                        <div class="p-4 rounded-full bg-primary/10 mb-4 group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-primary text-4xl">verified</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">View Verified Initiatives</h3>
+                        <p class="text-content-light/80 dark:text-content-dark/80">Explore official government programs and services.</p>
+                        <span class="mt-4 text-primary font-medium flex items-center gap-1">
+                            Browse all
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Access Channels -->
+        <section class="py-16 sm:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold">Access Information Through Multiple Channels</h2>
+                    <p class="mt-4 text-content-light/80 dark:text-content-dark/80">We provide various convenient ways to access verified government information, ensuring accessibility for all citizens.</p>
+                </div>
+                <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- USSD -->
+                    <div class="bg-white dark:bg-subtle-dark border border-subtle-light dark:border-subtle-dark p-6 rounded-xl text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                        <div class="w-12 h-12 flex items-center justify-center bg-primary/10 rounded-lg text-primary mx-auto mb-4">
+                            <span class="material-symbols-outlined text-2xl">smartphone</span>
+                        </div>
+                        <h3 class="text-lg font-bold">USSD Service</h3>
+                        <p class="text-sm text-content-light/70 dark:text-content-dark/70 mt-2">Dial *123*456# to access information, no internet required.</p>
+                        <div class="mt-4 bg-subtle-light dark:bg-subtle-dark p-3 rounded-lg font-mono text-sm">*123*456#</div>
+                    </div>
+                    
+                    <!-- WhatsApp Bot -->
+                    <div class="bg-white dark:bg-subtle-dark border border-subtle-light dark:border-subtle-dark p-6 rounded-xl text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                        <div class="w-12 h-12 flex items-center justify-center bg-primary/10 rounded-lg text-primary mx-auto mb-4">
+                            <span class="material-symbols-outlined text-2xl">chat</span>
+                        </div>
+                        <h3 class="text-lg font-bold">WhatsApp Bot</h3>
+                        <p class="text-sm text-content-light/70 dark:text-content-dark/70 mt-2">Chat with our bot on WhatsApp for instant answers.</p>
+                        <a href="#" class="inline-block mt-4 bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors">Start Chat</a>
+                    </div>
+                    
+                    <!-- AI Chatbot -->
+                    <a href="{% url 'chatbot' %}" class="bg-white dark:bg-subtle-dark border border-subtle-light dark:border-subtle-dark p-6 rounded-xl text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 block">
+                        <div class="w-12 h-12 flex items-center justify-center bg-primary/10 rounded-lg text-primary mx-auto mb-4">
+                            <span class="material-symbols-outlined text-2xl">smart_toy</span>
+                        </div>
+                        <h3 class="text-lg font-bold">AI Chatbot</h3>
+                        <p class="text-sm text-content-light/70 dark:text-content-dark/70 mt-2">Engage with our AI-powered assistant 24/7.</p>
+                        <span class="mt-4 text-primary font-medium flex items-center gap-1 justify-center">
+                            Try the chatbot
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                        </span>
+                    </a>
+                    
+                    <!-- Resources -->
+                    <a href="{% url 'resources' %}" class="bg-white dark:bg-subtle-dark border border-subtle-light dark:border-subtle-dark p-6 rounded-xl text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 block">
+                        <div class="w-12 h-12 flex items-center justify-center bg-primary/10 rounded-lg text-primary mx-auto mb-4">
+                            <span class="material-symbols-outlined text-2xl">menu_book</span>
+                        </div>
+                        <h3 class="text-lg font-bold">Educational Resources</h3>
+                        <p class="text-sm text-content-light/70 dark:text-content-dark/70 mt-2">Explore guides and FAQs to stay informed.</p>
+                        <span class="mt-4 text-primary font-medium flex items-center gap-1 justify-center">
+                            View resources
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="py-16 sm:py-24 bg-subtle-light dark:bg-subtle-dark">
+            <div class="container mx-auto px-6">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                    <div>
+                        <div class="text-3xl md:text-4xl font-bold text-primary">500+</div>
+                        <div class="text-content-light/70 dark:text-content-dark/70 mt-2">Verified Schemes</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl md:text-4xl font-bold text-primary">10K+</div>
+                        <div class="text-content-light/70 dark:text-content-dark/70 mt-2">Links Verified</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl md:text-4xl font-bold text-primary">95%</div>
+                        <div class="text-content-light/70 dark:text-content-dark/70 mt-2">User Satisfaction</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl md:text-4xl font-bold text-primary">24/7</div>
+                        <div class="text-content-light/70 dark:text-content-dark/70 mt-2">Support Available</div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- Footer -->
@@ -119,7 +267,6 @@
     </footer>
 </div>
 
-<!-- Scripts -->
 <script>
     // Dark mode toggle functionality
     document.getElementById('theme-toggle').addEventListener('click', function() {
@@ -138,10 +285,9 @@
     } else {
         document.documentElement.classList.remove('dark');
     }
-</script>
 
-<!-- Google Translate -->
-<script type="text/javascript">
+
+
   function googleTranslateElementInit() {
     new google.translate.TranslateElement({
       pageLanguage: 'en',
@@ -149,8 +295,10 @@
       layout: google.translate.TranslateElement.InlineLayout.SIMPLE
     }, 'google_translate_element');
   }
-</script>
-<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
+
+</script>
+
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
