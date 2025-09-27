@@ -139,17 +139,17 @@
 <div>
 <h3 class="text-xl font-bold text-danger">Threat Detected</h3>
 {% if result.safe_browsing.primary_threat == 'phishing' %}
-<p class="mt-1 text-muted-light dark:text-muted-dark">🎣 <strong>Phishing:</strong> This link may be trying to steal your personal information.</p>
+<p class="mt-1 text-muted-light dark:text-muted-dark"> <strong>Phishing:</strong> This link may be trying to steal your personal information.</p>
 {% elif result.safe_browsing.primary_threat == 'malware' %}
-<p class="mt-1 text-muted-light dark:text-muted-dark">🦠 <strong>Malware:</strong> This link may contain harmful software.</p>
+<p class="mt-1 text-muted-light dark:text-muted-dark"> <strong>Malware:</strong> This link may contain harmful software.</p>
 {% elif result.safe_browsing.primary_threat == 'scam' %}
-<p class="mt-1 text-muted-light dark:text-muted-dark">💰 <strong>Scam/Fraud:</strong> This appears to be a fraudulent scheme.</p>
+<p class="mt-1 text-muted-light dark:text-muted-dark"> <strong>Scam/Fraud:</strong> This appears to be a fraudulent scheme.</p>
 {% elif result.safe_browsing.primary_threat == 'spam' %}
-<p class="mt-1 text-muted-light dark:text-muted-dark">📧 <strong>Spam:</strong> This link is associated with unwanted content.</p>
+<p class="mt-1 text-muted-light dark:text-muted-dark"> <strong>Spam:</strong> This link is associated with unwanted content.</p>
 {% elif result.safe_browsing.primary_threat == 'suspicious' %}
-<p class="mt-1 text-muted-light dark:text-muted-dark">🔍 <strong>Suspicious:</strong> This link shows unusual behavior patterns.</p>
+<p class="mt-1 text-muted-light dark:text-muted-dark"> <strong>Suspicious:</strong> This link shows unusual behavior patterns.</p>
 {% else %}
-<p class="mt-1 text-muted-light dark:text-muted-dark">⚠️ Multiple security engines have flagged this link as potentially dangerous.</p>
+<p class="mt-1 text-muted-light dark:text-muted-dark"> Multiple security engines have flagged this link as potentially dangerous.</p>
 {% endif %}
 </div>
 </div>
