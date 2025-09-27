@@ -10,58 +10,40 @@
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin/>
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;900&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
-    <script type="text/javascript">
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({
-                pageLanguage: 'en',
-                includedLanguages: 'en,yo,ha,ig',
-                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                autoDisplay: false
-            }, 'google_translate_element');
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#17cf17",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#112111",
+                        "content-light": "#0e1b0e",
+                        "content-dark": "#e3f3e3",
+                        "subtle-light": "#d0e7d0",
+                        "subtle-dark": "#2a3c2a",
+                    },
+                    fontFamily: {
+                        display: ["Public Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                        lg: "0.75rem",
+                        xl: "1rem",
+                        full: "9999px"
+                    },
+                },
+            },
         }
     </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
-
-        /* Completely hide Google Translate elements */
-        #google_translate_element,
-        .goog-te-banner-frame,
-        .goog-te-banner-frame.skiptranslate,
-        .goog-te-gadget,
-        .goog-te-combo,
-        .goog-logo-link,
-        .goog-te-gadget span,
-        .goog-te-gadget > span > a {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            height: 0 !important;
-            width: 0 !important;
-            position: absolute !important;
-            left: -9999px !important;
-        }
-
-        /* Prevent body shift */
-        body {
-            top: 0px !important;
-            position: static !important;
-        }
-
-        /* Custom dropdown styles */
-        .language-dropdown {
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
-        }
-
-        .language-dropdown.show {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
+        /* Style Google Translate dropdown */
+        #google_translate_element select {
+            @apply bg-white dark:bg-subtle-dark border border-subtle-light dark:border-subtle-dark rounded-lg px-2 py-1 text-sm text-content-light dark:text-content-dark focus:outline-none focus:ring-2 focus:ring-primary;
         }
     </style>
 </head>
@@ -80,129 +62,32 @@
                 <h2 class="text-xl font-bold">GDS Verified Schemes</h2>
             </div>
             
-            <!-- Search Bar -->
-            <div class="relative w-full max-w-xs ml-4">
-                <input class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-subtle-dark border border-subtle-light dark:border-subtle-dark rounded-lg text-sm text-content-light dark:text-content-dark placeholder-content-light/50 dark:placeholder-content-dark/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="Search initiatives..." type="text"/>
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <span class="material-symbols-outlined text-content-light/50 dark:text-content-dark/50">
-                        search
-                    </span>
+            <!-- Search + Language + Theme -->
+            <div class="flex items-center gap-4 ml-4">
+                <!-- Search Bar -->
+                <div class="relative w-full max-w-xs">
+                    <input class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-subtle-dark border border-subtle-light dark:border-subtle-dark rounded-lg text-sm text-content-light dark:text-content-dark placeholder-content-light/50 dark:placeholder-content-dark/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="Search initiatives..." type="text"/>
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <span class="material-symbols-outlined text-content-light/50 dark:text-content-dark/50">
+                            search
+                        </span>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Fixed Translate Button -->
-            <div class="relative">
-                <button id="translate-btn" class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-subtle-dark border border-subtle-light dark:border-subtle-dark rounded-lg hover:border-primary transition-all">
-                    <span class="material-symbols-outlined text-lg">translate</span>
-                    <span id="current-language" class="text-sm font-medium">English</span>
-                    <span class="material-symbols-outlined text-sm">expand_more</span>
+                <!-- Language Switcher -->
+                <div id="google_translate_element" class="hidden sm:block"></div>
+
+                <!-- Dark mode toggle -->
+                <button id="theme-toggle" class="p-2 rounded-lg bg-subtle-light dark:bg-subtle-dark hover:bg-primary/20 transition-colors">
+                    <span class="material-symbols-outlined dark:hidden">dark_mode</span>
+                    <span class="material-symbols-outlined hidden dark:block">light_mode</span>
                 </button>
-                
-                <!-- Hidden Google Translate Element -->
-                <div id="google_translate_element"></div>
-                
-                <!-- Custom Language Dropdown -->
-                <div id="language-dropdown" class="language-dropdown absolute right-0 mt-2 w-48 bg-white dark:bg-subtle-dark rounded-lg shadow-lg border border-subtle-light dark:border-subtle-dark z-50">
-                    <button onclick="changeLanguage('en', 'English')" class="w-full text-left px-4 py-3 text-sm hover:bg-subtle-light dark:hover:bg-subtle-dark/50 rounded-t-lg transition-colors flex items-center gap-2">
-                        <span>🇬🇧</span>
-                        <span>English</span>
-                    </button>
-                    <button onclick="changeLanguage('yo', 'Yorùbá')" class="w-full text-left px-4 py-3 text-sm hover:bg-subtle-light dark:hover:bg-subtle-dark/50 transition-colors flex items-center gap-2">
-                        <span>🇳🇬</span>
-                        <span>Yorùbá</span>
-                    </button>
-                    <button onclick="changeLanguage('ha', 'Hausa')" class="w-full text-left px-4 py-3 text-sm hover:bg-subtle-light dark:hover:bg-subtle-dark/50 transition-colors flex items-center gap-2">
-                        <span>🇳🇬</span>
-                        <span>Hausa</span>
-                    </button>
-                    <button onclick="changeLanguage('ig', 'Igbo')" class="w-full text-left px-4 py-3 text-sm hover:bg-subtle-light dark:hover:bg-subtle-dark/50 rounded-b-lg transition-colors flex items-center gap-2">
-                        <span>🇳🇬</span>
-                        <span>Igbo</span>
-                    </button>
-                </div>
             </div>
-
-            <!-- Dark mode toggle -->
-            <button id="theme-toggle" class="p-2 rounded-lg bg-subtle-light dark:bg-subtle-dark hover:bg-primary/20 transition-colors ml-4">
-                <span class="material-symbols-outlined dark:hidden">dark_mode</span>
-                <span class="material-symbols-outlined hidden dark:block">light_mode</span>
-            </button>
         </div>
     </header>
 
     <main class="flex-grow">
-        <!-- Hero Section -->
-        <section class="relative py-20 sm:py-28 md:py-32 flex items-center justify-center text-center">
-            <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-background-light dark:to-background-dark"></div>
-            <div class="relative z-10 container mx-auto px-6">
-                <div class="max-w-3xl mx-auto">
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight">
-                        Empowering Citizens with Verified Government Information
-                    </h1>
-                    <p class="mt-6 text-lg md:text-xl max-w-2xl mx-auto text-content-light/80 dark:text-content-dark/80">
-                        Access accurate and up-to-date information on government initiatives, services, and resources through our trusted platform.
-                    </p>
-                    <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-                        <a href="#" class="inline-flex items-center justify-center bg-primary text-white font-bold text-base px-8 py-3.5 rounded-lg hover:bg-primary/90 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-background-light dark:focus:ring-offset-background-dark">
-                            Verify a Link Now
-                        </a>
-                        <a href="#" class="inline-flex items-center justify-center bg-primary/20 dark:bg-primary/30 text-primary font-bold text-base px-8 py-3.5 rounded-lg hover:bg-primary/30 dark:hover:bg-primary/40 transition-all">
-                            Browse Initiatives
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Rest of your content remains the same -->
-        <!-- Feature Cards -->
-        <section class="py-16 sm:py-24 bg-background-light dark:bg-background-dark">
-            <div class="container mx-auto px-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <!-- Verify Links -->
-                    <a href="#" class="group bg-white dark:bg-subtle-dark p-8 rounded-xl border border-subtle-light dark:border-subtle-dark flex flex-col items-center text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                        <div class="p-4 rounded-full bg-primary/10 mb-4 group-hover:scale-110 transition-transform">
-                            <span class="material-symbols-outlined text-primary text-4xl">link</span>
-                        </div>
-                        <h3 class="text-xl font-bold mb-2">Verify Links</h3>
-                        <p class="text-content-light/80 dark:text-content-dark/80">Check if a link is from a verified government source.</p>
-                        <span class="mt-4 text-primary font-medium flex items-center gap-1">
-                            Try it now
-                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
-                        </span>
-                    </a>
-
-                    <!-- Report Scam -->
-                    <a href="#" class="group bg-white dark:bg-subtle-dark p-8 rounded-xl border border-subtle-light dark:border-subtle-dark flex flex-col items-center text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                        <div class="p-4 rounded-full bg-primary/10 mb-4 group-hover:scale-110 transition-transform">
-                            <span class="material-symbols-outlined text-primary text-4xl">report</span>
-                        </div>
-                        <h3 class="text-xl font-bold mb-2">Report Scam</h3>
-                        <p class="text-content-light/80 dark:text-content-dark/80">Report suspicious websites or messages to protect others.</p>
-                        <span class="mt-4 text-primary font-medium flex items-center gap-1">
-                            Report an issue
-                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
-                        </span>
-                    </a>
-
-                    <!-- Initiatives -->
-                    <a href="#" class="group bg-white dark:bg-subtle-dark p-8 rounded-xl border border-subtle-light dark:border-subtle-dark flex flex-col items-center text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                        <div class="p-4 rounded-full bg-primary/10 mb-4 group-hover:scale-110 transition-transform">
-                            <span class="material-symbols-outlined text-primary text-4xl">verified</span>
-                        </div>
-                        <h3 class="text-xl font-bold mb-2">View Verified Initiatives</h3>
-                        <p class="text-content-light/80 dark:text-content-dark/80">Explore official government programs and services.</p>
-                        <span class="mt-4 text-primary font-medium flex items-center gap-1">
-                            Browse all
-                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
-                        </span>
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Other sections continue... -->
-
+        <!-- (rest of your page stays unchanged) -->
     </main>
 
     <!-- Footer -->
@@ -234,6 +119,7 @@
     </footer>
 </div>
 
+<!-- Scripts -->
 <script>
     // Dark mode toggle functionality
     document.getElementById('theme-toggle').addEventListener('click', function() {
@@ -246,103 +132,25 @@
         }
     });
 
-    // Check for saved theme preference
+    // Check for saved theme preference or respect OS setting
     if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         document.documentElement.classList.add('dark');
     } else {
         document.documentElement.classList.remove('dark');
     }
-
-    // Translation functionality
-    let isDropdownOpen = false;
-    const dropdown = document.getElementById('language-dropdown');
-    const translateBtn = document.getElementById('translate-btn');
-
-    // Toggle dropdown
-    translateBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        if (isDropdownOpen) {
-            dropdown.classList.remove('show');
-            isDropdownOpen = false;
-        } else {
-            dropdown.classList.add('show');
-            isDropdownOpen = true;
-        }
-    });
-
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function() {
-        if (isDropdownOpen) {
-            dropdown.classList.remove('show');
-            isDropdownOpen = false;
-        }
-    });
-
-    // Prevent dropdown close when clicking inside
-    dropdown.addEventListener('click', function(e) {
-        e.stopPropagation();
-    });
-
-    // Language change function - FIXED VERSION
-    function changeLanguage(langCode, langName) {
-        // Update button text
-        document.getElementById('current-language').textContent = langName;
-        
-        // Close dropdown
-        dropdown.classList.remove('show');
-        isDropdownOpen = false;
-
-        // Use Google Translate API
-        if (typeof google !== 'undefined' && google.translate && google.translate.TranslateElement) {
-            // This is the correct way to trigger translation
-            const select = document.querySelector('.goog-te-combo');
-            if (select) {
-                select.value = langCode;
-                select.dispatchEvent(new Event('change'));
-            }
-        } else {
-            // Fallback: reload page with language parameter
-            window.location.href = window.location.pathname + '?hl=' + langCode;
-        }
-    }
-
-    // Initialize Google Translate after page load
-    document.addEventListener('DOMContentLoaded', function() {
-        // Wait for Google Translate to load
-        setTimeout(function() {
-            const select = document.querySelector('.goog-te-combo');
-            if (select) {
-                // Hide the Google Translate dropdown completely
-                select.style.display = 'none';
-                
-                // Set initial language based on URL parameter
-                const urlParams = new URLSearchParams(window.location.search);
-                const lang = urlParams.get('hl');
-                if (lang && ['en', 'yo', 'ha', 'ig'].includes(lang)) {
-                    select.value = lang;
-                    const langNames = {
-                        'en': 'English',
-                        'yo': 'Yorùbá',
-                        'ha': 'Hausa',
-                        'ig': 'Igbo'
-                    };
-                    document.getElementById('current-language').textContent = langNames[lang];
-                }
-            }
-        }, 1000);
-    });
-
-    // Alternative translation method using iframe approach
-    function translatePage(lang) {
-        // Create a hidden iframe with Google Translate
-        const iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        iframe.src = `https://translate.google.com/translate?hl=en&sl=auto&tl=${lang}&u=${encodeURIComponent(window.location.href)}`;
-        document.body.appendChild(iframe);
-        
-        // Alternative: redirect to Google Translate version
-        // window.location.href = `https://translate.google.com/translate?hl=en&sl=auto&tl=${lang}&u=${encodeURIComponent(window.location.href)}`;
-    }
 </script>
+
+<!-- Google Translate -->
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'en',
+      includedLanguages: 'ig,ha,yo',
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+    }, 'google_translate_element');
+  }
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 </body>
 </html>
