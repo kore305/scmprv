@@ -85,7 +85,7 @@
 <div class="flex flex-col sm:flex-row gap-4">
 <div class="relative flex-grow">
 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-muted-light dark:text-muted-dark">link</span>
-{{ form.url|add_class:"form-input w-full rounded-lg border-subtle-light dark:border-subtle-dark bg-background-light dark:bg-subtle-dark h-14 pl-12 pr-4 text-base focus:border-primary focus:ring-primary" }}
+{{ form.url }}
 </div>
 <button type="submit" class="flex-shrink-0 inline-flex items-center justify-center rounded-lg h-14 px-8 bg-primary text-white text-base font-bold transition-all hover:bg-primary/90">
 <span class="truncate">Verify Link</span>
@@ -255,7 +255,7 @@
 {% else %}
 <div class="bg-subtle-light dark:bg-subtle-dark rounded-lg p-4 flex items-center gap-4">
 <div class="bg-success/10 dark:bg-success/20 text-success rounded-full p-2">
-<span class="material-symbols-oriented">check_circle</span>
+<span class="material-symbols-outlined">check_circle</span>
 </div>
 <div>
 <p class="font-bold">Scams</p>
@@ -342,6 +342,32 @@
 </div>
 </main>
 </div>
+
+<style>
+/* Custom styling for the form input to match the design */
+input[type="url"] {
+    width: 100%;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    background-color: #ffffff;
+    height: 3.5rem;
+    padding-left: 3rem;
+    padding-right: 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+input[type="url"]:focus {
+    border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+    outline: none;
+}
+
+.dark input[type="url"] {
+    background-color: #f1f5f9;
+    border-color: #e2e8f0;
+}
+</style>
 
 </body>
 </html>
