@@ -46,30 +46,68 @@ def verify_link(request):
                 
                 malicious = stats.get('malicious', 0)
                 suspicious = stats.get('suspicious', 0)
-                clean = stats.get('harmless', 0)
-                undetected = stats.get('undetected', 0)
                 
                 vt_safe = malicious == 0 and suspicious == 0
                 
-                # Parse individual scanner results
-                scanner_results = []
+                # Categorize threats by type
+                threat_types = {
+                    'phishing': 0,
+                    'malware': 0,
+                    'spam': 0,
+                    'scam': 0,
+                    'suspicious': 0,
+                    'other_malicious': 0
+                }
+                
+                threat_details = []
+                
                 for engine, result in results.items():
-                    scanner_results.append({
-                        'engine': engine,
-                        'category': result.get('category', 'unknown'),
-                        'result': result.get('result', 'No result'),
-                        'method': result.get('method', 'unknown')
-                    })
+                    category = result.get('category', '').lower()
+                    result_text = result.get('result', '').lower()
+                    
+                    if category in ['malicious', 'suspicious']:
+                        # Categorize by threat type
+                        if 'phishing' in result_text or 'phish' in result_text:
+                            threat_types['phishing'] += 1
+                            threat_details.append({'engine': engine, 'type': 'Phishing', 'result': result.get('result', 'Phishing detected')})
+                        elif 'malware' in result_text or 'trojan' in result_text or 'virus' in result_text:
+                            threat_types['malware'] += 1
+                            threat_details.append({'engine': engine, 'type': 'Malware', 'result': result.get('result', 'Malware detected')})
+                        elif 'spam' in result_text:
+                            threat_types['spam'] += 1
+                            threat_details.append({'engine': engine, 'type': 'Spam', 'result': result.get('result', 'Spam detected')})
+                        elif 'scam' in result_text or 'fraud' in result_text:
+                            threat_types['scam'] += 1
+                            threat_details.append({'engine': engine, 'type': 'Scam/Fraud', 'result': result.get('result', 'Scam detected')})
+                        elif category == 'suspicious':
+                            threat_types['suspicious'] += 1
+                            threat_details.append({'engine': engine, 'type': 'Suspicious', 'result': result.get('result', 'Suspicious activity')})
+                        else:
+                            threat_types['other_malicious'] += 1
+                            threat_details.append({'engine': engine, 'type': 'Other Threat', 'result': result.get('result', 'Threat detected')})
+                
+                # Determine primary threat type
+                primary_threat = None
+                if threat_types['phishing'] > 0:
+                    primary_threat = 'phishing'
+                elif threat_types['malware'] > 0:
+                    primary_threat = 'malware'
+                elif threat_types['scam'] > 0:
+                    primary_threat = 'scam'
+                elif threat_types['spam'] > 0:
+                    primary_threat = 'spam'
+                elif threat_types['suspicious'] > 0:
+                    primary_threat = 'suspicious'
+                elif threat_types['other_malicious'] > 0:
+                    primary_threat = 'other'
                 
                 vt_result = {
                     "safe": vt_safe,
-                    "malicious_count": malicious,
-                    "suspicious_count": suspicious,
-                    "clean_count": clean,
-                    "undetected_count": undetected,
-                    "total_scanners": len(results),
+                    "primary_threat": primary_threat,
+                    "threat_types": threat_types,
+                    "threat_details": threat_details,
+                    "total_threats": sum(threat_types.values()),
                     "scan_date": attributes.get('last_analysis_date'),
-                    "scanner_results": scanner_results,
                     "reputation": attributes.get('reputation', 0),
                     "url": attributes.get('url', original_url)
                 }
