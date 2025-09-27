@@ -376,45 +376,32 @@ function waitForGoogleTranslate() {
     }, 100);
 }
 
-// Translate function - replace your existing one
+// Improved translate functionality
+function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,yo,ha,ig',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+    }, 'google_translate_element');
+}
+
 function translateToLanguage(langCode) {
-    // Close dropdown
     const dropdown = document.getElementById('language-dropdown');
     dropdown.classList.add('opacity-0', 'invisible');
     isDropdownOpen = false;
     
-    // Try multiple times to find the Google combo
-    let attempts = 0;
-    const maxAttempts = 10;
-    
-    const tryTranslate = () => {
+    // Use Google Translate API directly
+    if (typeof google !== 'undefined' && google.translate) {
+        google.translate.translatePage('en', langCode);
+    } else {
+        // Fallback: trigger the hidden dropdown
         const googleCombo = document.querySelector('.goog-te-combo');
-        if (googleCombo && googleCombo.options) {
+        if (googleCombo) {
             googleCombo.value = langCode;
             googleCombo.dispatchEvent(new Event('change'));
-            
-            // Update button text
-            const languages = {
-                'en': 'English',
-                'yo': 'Yorùbá', 
-                'ha': 'Hausa',
-                'ig': 'Igbo'
-            };
-            
-            const buttonText = document.querySelector('#translate-btn span:nth-child(2)');
-            buttonText.textContent = languages[langCode] || 'Translate';
-            
-            return true;
         }
-        
-        attempts++;
-        if (attempts < maxAttempts) {
-            setTimeout(tryTranslate, 200);
-        }
-        return false;
-    };
-    
-    tryTranslate();
+    }
 }
 // Update Google Translate init function
 function googleTranslateElementInit() {
