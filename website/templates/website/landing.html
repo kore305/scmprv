@@ -10,6 +10,7 @@
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin/>
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;900&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -41,6 +42,22 @@
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
+
+        .goog-te-combo {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 14px;
+}
+
+.goog-te-banner-frame {
+    display: none !important;
+}
+
+body {
+    top: 0px !important;
+}
     </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark font-display text-content-light dark:text-content-dark">
@@ -67,7 +84,7 @@
                     </span>
                 </div>
             </div>
-            
+            <div id="google_translate_element"></div>
             <!-- Dark mode toggle -->
             <button id="theme-toggle" class="p-2 rounded-lg bg-subtle-light dark:bg-subtle-dark hover:bg-primary/20 transition-colors ml-4">
                 <span class="material-symbols-outlined dark:hidden">dark_mode</span>
@@ -275,6 +292,18 @@
     } else {
         document.documentElement.classList.remove('dark');
     }
+
+
+
+function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,yo,ha,ig',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+    }, 'google_translate_element');
+}
+
 </script>
 </body>
 </html>
