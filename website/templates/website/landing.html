@@ -43,10 +43,12 @@
         }
 
 
-        #google_translate_element select {
-    @apply bg-white dark:bg-subtle-dark border border-subtle-light dark:border-subtle-dark rounded-lg px-2 py-1 text-sm text-content-light dark:text-content-dark focus:outline-none focus:ring-2 focus:ring-primary;
-}
-
+        #google_translate_element {
+        display: none !important;
+            }
+        .goog-logo-link, .goog-te-gadget {
+    display: none !important;
+             }   
     </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark font-display text-content-light dark:text-content-dark">
@@ -75,7 +77,9 @@
             </div>
 
             <!-- Language Switcher -->
-            <div id="google_translate_element" class="ml-4"></div>
+            <button id="translate-btn" class="ml-4 px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition">
+                         Translate
+                    </button>
 
             
             <!-- Dark mode toggle -->
@@ -288,17 +292,29 @@
 
 
 
+
+</script>
+<script>
+  // Load Google Translate but hide UI
   function googleTranslateElementInit() {
     new google.translate.TranslateElement({
       pageLanguage: 'en',
       includedLanguages: 'ig,ha,yo',
-      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      autoDisplay: false
     }, 'google_translate_element');
   }
 
-
+  // Trigger translation manually
+  document.getElementById('translate-btn').addEventListener('click', function() {
+    const frame = document.querySelector('iframe.goog-te-menu-frame');
+    if (frame) {
+      frame.contentWindow.document.querySelector('.goog-te-menu2-item').click();
+    } else {
+      alert("Translation menu not loaded yet, please wait a moment.");
+    }
+  });
 </script>
-
 <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 </body>
 </html>
