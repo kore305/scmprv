@@ -6,6 +6,9 @@ from django.views.decorators.csrf import csrf_exempt
 from .utils import check_url_with_virustotal, extract_domain
 from whatsapp_verifier.models import FederalProgram
 from .utils_chatbot import query_openrouter, search_programs_in_db
+from django.shortcuts import render
+from django.conf import settings
+import requests
 # Create your views here.
 
 def landing_page(request):
@@ -16,33 +19,57 @@ def verify_link(request):
     form = LinkCheckForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
-        url = form.cleaned_data["url"]
+        original_url = form.cleaned_data["url"]
 
         # --- VirusTotal check (inline) ---
-        headers = {
-            "x-apikey": settings.VIRUSTOTAL_API_KEY
-        }
-        url = base64.urlsafe_b64encode(url.encode()).decode().strip("=")
-        vt_response = requests.get(
-            f"https://www.virustotal.com/api/v3/urls{url}",
-            headers=headers
-        )
-        if vt_response.status_code == 200:
-            vt_result = vt_response.json()
-        else:
+        try:
+            headers = {
+                "x-apikey": settings.VIRUSTOTAL_API_KEY
+            }
+            
+            # Encode URL for VirusTotal API
+            url_id = base64.urlsafe_b64encode(original_url.encode()).decode().strip("=")
+            
+            # Correct VirusTotal API endpoint
+            vt_response = requests.get(
+                f"https://www.virustotal.com/api/v3/urls/{url_id}",
+                headers=headers
+            )
+            
+            if vt_response.status_code == 200:
+                vt_result = vt_response.json()
+                # Check if URL is safe based on VirusTotal response
+                stats = vt_result.get('data', {}).get('attributes', {}).get('last_analysis_stats', {})
+                malicious = stats.get('malicious', 0)
+                suspicious = stats.get('suspicious', 0)
+                
+                vt_safe = malicious == 0 and suspicious == 0
+                vt_result = {
+                    "safe": vt_safe,
+                    "malicious_count": malicious,
+                    "suspicious_count": suspicious,
+                    "full_response": vt_result
+                }
+            else:
+                vt_result = {
+                    "error": f"VirusTotal API error {vt_response.status_code}",
+                    "details": vt_response.text,
+                    "safe": None
+                }
+        except Exception as e:
             vt_result = {
-                "error": f"VirusTotal API error {vt_response.status_code}",
-                "details": vt_response.text,
+                "error": f"Error checking with VirusTotal: {str(e)}",
+                "safe": None
             }
 
         # Extract domain from input
-        domain = extract_domain(url)
+        domain = extract_domain(original_url)
 
         # Match domain against FederalProgram.link field
         program = FederalProgram.objects.filter(link__icontains=domain).first()
 
         result = {
-            "virustotal": vt_result,
+            "safe_browsing": vt_result,  # Changed from "virustotal" to match template
             "program": program,
         }
 

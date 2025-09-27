@@ -13,7 +13,7 @@ CSRF_TRUSTED_ORIGINS = [
     # Add other domains if needed
 ]
 # SECURITY
-VIRUSTOTAL_API_KEY = os.environ.get("VIRUSTOTAL_API_KEY", "")
+VIRUSTOTAL_API_KEY = os.environ.get("VIRUSTOTAL_API_KEY")
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "fallback-secret")
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 ALLOWED_HOSTS = ["*"]  # Railway handles host routing
