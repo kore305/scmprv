@@ -43,7 +43,7 @@
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
 
-  /* Hide Google branding */
+/* Hide Google branding */
 .goog-te-banner-frame,
 .goog-te-banner-frame.skiptranslate {
     display: none !important;
@@ -319,9 +319,9 @@ body.goog-te-compat { position: static !important; }
 
 
 
-
 // Custom translate functionality
 let isDropdownOpen = false;
+let googleTranslateReady = false;
 
 // Toggle dropdown
 document.getElementById('translate-btn').addEventListener('click', function() {
@@ -350,6 +350,17 @@ document.addEventListener('click', function(event) {
     }
 });
 
+// Wait for Google Translate to load
+function waitForGoogleTranslate() {
+    const checkForCombo = setInterval(() => {
+        const googleCombo = document.querySelector('.goog-te-combo');
+        if (googleCombo) {
+            googleTranslateReady = true;
+            clearInterval(checkForCombo);
+        }
+    }, 100);
+}
+
 // Translate function
 function translateToLanguage(langCode) {
     // Close dropdown
@@ -357,23 +368,25 @@ function translateToLanguage(langCode) {
     dropdown.classList.add('opacity-0', 'invisible');
     isDropdownOpen = false;
     
-    // Trigger Google Translate
-    const googleCombo = document.querySelector('.goog-te-combo');
-    if (googleCombo) {
-        googleCombo.value = langCode;
-        googleCombo.dispatchEvent(new Event('change'));
-    }
-    
-    // Update button text
-    const languages = {
-        'en': 'English',
-        'yo': 'Yorùbá', 
-        'ha': 'Hausa',
-        'ig': 'Igbo'
-    };
-    
-    const buttonText = document.querySelector('#translate-btn span:nth-child(2)');
-    buttonText.textContent = languages[langCode] || 'Translate';
+    // Wait a bit for Google Translate to be ready
+    setTimeout(() => {
+        const googleCombo = document.querySelector('.goog-te-combo');
+        if (googleCombo) {
+            googleCombo.value = langCode;
+            googleCombo.dispatchEvent(new Event('change'));
+            
+            // Update button text
+            const languages = {
+                'en': 'English',
+                'yo': 'Yorùbá', 
+                'ha': 'Hausa',
+                'ig': 'Igbo'
+            };
+            
+            const buttonText = document.querySelector('#translate-btn span:nth-child(2)');
+            buttonText.textContent = languages[langCode] || 'Translate';
+        }
+    }, 500);
 }
 
 // Update Google Translate init function
@@ -384,6 +397,9 @@ function googleTranslateElementInit() {
         layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
         autoDisplay: false
     }, 'google_translate_element');
+    
+    // Wait for it to load
+    waitForGoogleTranslate();
 }
 
 </script>
