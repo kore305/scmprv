@@ -37,18 +37,41 @@ def verify_link(request):
             )
             
             if vt_response.status_code == 200:
-                vt_result = vt_response.json()
-                # Check if URL is safe based on VirusTotal response
-                stats = vt_result.get('data', {}).get('attributes', {}).get('last_analysis_stats', {})
+                vt_data = vt_response.json()
+                
+                # Extract detailed scan results
+                attributes = vt_data.get('data', {}).get('attributes', {})
+                stats = attributes.get('last_analysis_stats', {})
+                results = attributes.get('last_analysis_results', {})
+                
                 malicious = stats.get('malicious', 0)
                 suspicious = stats.get('suspicious', 0)
+                clean = stats.get('harmless', 0)
+                undetected = stats.get('undetected', 0)
                 
                 vt_safe = malicious == 0 and suspicious == 0
+                
+                # Parse individual scanner results
+                scanner_results = []
+                for engine, result in results.items():
+                    scanner_results.append({
+                        'engine': engine,
+                        'category': result.get('category', 'unknown'),
+                        'result': result.get('result', 'No result'),
+                        'method': result.get('method', 'unknown')
+                    })
+                
                 vt_result = {
                     "safe": vt_safe,
                     "malicious_count": malicious,
                     "suspicious_count": suspicious,
-                    "full_response": vt_result
+                    "clean_count": clean,
+                    "undetected_count": undetected,
+                    "total_scanners": len(results),
+                    "scan_date": attributes.get('last_analysis_date'),
+                    "scanner_results": scanner_results,
+                    "reputation": attributes.get('reputation', 0),
+                    "url": attributes.get('url', original_url)
                 }
             else:
                 vt_result = {
