@@ -2,220 +2,346 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Verify Link - GDS Verified Schemes</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Link Security Verification - GovAssist</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    "primary": "#16a34a",
+                    "background-light": "#ffffff",
+                    "background-dark": "#f8fafc",
+                    "foreground-light": "#020617",
+                    "foreground-dark": "#020617",
+                    "subtle-light": "#f1f5f9",
+                    "subtle-dark": "#e2e8f0",
+                    "muted-light": "#64748b",
+                    "muted-dark": "#475569",
+                    "success": "#16a34a",
+                    "danger": "#dc2626",
+                    "warning": "#f59e0b",
+                    "info": "#3b82f6",
+                },
+                fontFamily: {
+                    "display": ["Public Sans", "sans-serif"]
+                },
+                borderRadius: {
+                    "DEFAULT": "0.5rem",
+                    "lg": "0.75rem",
+                    "xl": "1rem",
+                    "full": "9999px"
+                },
+            },
+        },
+    }
+</script>
 </head>
-<body class="bg-gray-100 text-gray-900">
+<body class="font-display bg-background-light dark:bg-background-dark text-foreground-light dark:text-foreground-dark">
+<div class="relative flex h-auto min-h-screen w-full flex-col">
+<header class="sticky top-0 z-50 w-full bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-sm">
+<div class="container mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex h-16 items-center justify-between">
+<div class="flex items-center gap-4">
+<svg class="h-8 w-8 text-primary" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-3zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V13H5V6.3l7-3.11v10.8z"></path>
+</svg>
+<h2 class="text-xl font-bold">GovAssist</h2>
+</div>
+<nav class="hidden md:flex items-center gap-6 text-sm font-medium">
+<a class="hover:text-primary transition-colors" href="#">Home</a>
+<a class="hover:text-primary transition-colors" href="#">Services</a>
+<a class="hover:text-primary transition-colors" href="#">Resources</a>
+<a class="hover:text-primary transition-colors" href="#">Contact</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="hidden sm:inline-flex items-center justify-center rounded-md h-9 px-4 text-sm font-bold bg-subtle-light dark:bg-subtle-dark hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors">Login</button>
+<button class="md:hidden flex items-center justify-center size-9 rounded-full bg-subtle-light dark:bg-subtle-dark hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-1">
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+<div class="mx-auto max-w-3xl text-center">
+<h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">Link Security Verification</h1>
+<p class="mt-4 text-lg text-muted-light dark:text-muted-dark">Enter a URL to scan for security threats and verify its authenticity.</p>
+</div>
 
-  <div class="max-w-4xl mx-auto py-12 px-6">
-    <h1 class="text-3xl font-bold text-center mb-6">Verify a Link</h1>
+<!-- Form Section -->
+<div class="mx-auto mt-10 max-w-xl">
+<form method="post">
+{% csrf_token %}
+<div class="flex flex-col sm:flex-row gap-4">
+<div class="relative flex-grow">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-muted-light dark:text-muted-dark">link</span>
+{{ form.url|add_class:"form-input w-full rounded-lg border-subtle-light dark:border-subtle-dark bg-background-light dark:bg-subtle-dark h-14 pl-12 pr-4 text-base focus:border-primary focus:ring-primary" }}
+</div>
+<button type="submit" class="flex-shrink-0 inline-flex items-center justify-center rounded-lg h-14 px-8 bg-primary text-white text-base font-bold transition-all hover:bg-primary/90">
+<span class="truncate">Verify Link</span>
+</button>
+</div>
+</form>
+</div>
 
-    <form method="post" class="space-y-4 bg-white p-6 rounded-lg shadow max-w-xl mx-auto">
-      {% csrf_token %}
-      {{ form.url }}
-      <button type="submit"
-        class="w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700">
-        Check Link
-      </button>
-    </form>
+{% if result %}
+<!-- Results Section -->
+<div class="mx-auto mt-12 max-w-3xl">
 
-    {% if result %}
-      <div class="mt-8 space-y-6">
-        
-        <!-- Security Overview -->
-        <div class="bg-white p-6 rounded-lg shadow">
-          <h2 class="text-xl font-bold mb-4">Security Analysis</h2>
+<!-- Security Status Overview -->
+<section class="mb-12">
+<h2 class="text-2xl font-bold tracking-tight mb-6 text-center">Security Status Overview</h2>
 
-          {% if result.safe_browsing.error %}
-            <div class="p-4 bg-yellow-50 border-l-4 border-yellow-400">
-              <p class="text-yellow-800 font-semibold">⚠️ Security Check Error</p>
-              <p class="text-yellow-700 text-sm mt-1">{{ result.safe_browsing.error }}</p>
-            </div>
-          {% else %}
-            <!-- Overall Safety Status -->
-            {% if result.safe_browsing.safe %}
-              <div class="p-4 bg-green-50 border-l-4 border-green-400 mb-4">
-                <p class="text-green-800 font-semibold text-lg">✅ Link appears safe</p>
-                <p class="text-green-700 text-sm mt-1">No security threats detected by our analysis</p>
-              </div>
-            {% else %}
-              <div class="p-4 bg-red-50 border-l-4 border-red-400 mb-4">
-                <p class="text-red-800 font-semibold text-lg">❌ Warning: Security threats detected</p>
-                
-                <!-- Primary Threat Type -->
-                {% if result.safe_browsing.primary_threat == 'phishing' %}
-                  <p class="text-red-700 text-sm mt-2">🎣 <strong>Primary Threat:</strong> Phishing - This link may be trying to steal your personal information</p>
-                {% elif result.safe_browsing.primary_threat == 'malware' %}
-                  <p class="text-red-700 text-sm mt-2">🦠 <strong>Primary Threat:</strong> Malware - This link may contain harmful software</p>
-                {% elif result.safe_browsing.primary_threat == 'scam' %}
-                  <p class="text-red-700 text-sm mt-2">💰 <strong>Primary Threat:</strong> Scam/Fraud - This link may be part of a fraudulent scheme</p>
-                {% elif result.safe_browsing.primary_threat == 'spam' %}
-                  <p class="text-red-700 text-sm mt-2">📧 <strong>Primary Threat:</strong> Spam - This link is associated with unwanted content</p>
-                {% elif result.safe_browsing.primary_threat == 'suspicious' %}
-                  <p class="text-red-700 text-sm mt-2">🔍 <strong>Primary Threat:</strong> Suspicious Activity - This link shows unusual behavior patterns</p>
-                {% else %}
-                  <p class="text-red-700 text-sm mt-2">⚠️ <strong>Threats detected</strong> - Multiple security engines flagged this link</p>
-                {% endif %}
-              </div>
-            {% endif %}
+{% if result.safe_browsing.error %}
+<div class="bg-warning/10 dark:bg-warning/20 rounded-xl p-6 md:p-8 flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+<div class="flex-shrink-0">
+<div class="bg-warning/20 dark:bg-warning/30 text-warning rounded-full p-4">
+<span class="material-symbols-outlined !text-5xl">error</span>
+</div>
+</div>
+<div>
+<h3 class="text-xl font-bold text-warning">Scan Error</h3>
+<p class="mt-1 text-muted-light dark:text-muted-dark">{{ result.safe_browsing.error }}</p>
+</div>
+</div>
+{% elif result.safe_browsing.safe %}
+<div class="bg-subtle-light dark:bg-subtle-dark rounded-xl p-6 md:p-8 flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+<div class="flex-shrink-0">
+<div class="bg-success/10 dark:bg-success/20 text-success rounded-full p-4">
+<span class="material-symbols-outlined !text-5xl">security</span>
+</div>
+</div>
+<div>
+<h3 class="text-xl font-bold text-success">Safe Link</h3>
+<p class="mt-1 text-muted-light dark:text-muted-dark">This link has been verified as safe and does not contain any known threats.</p>
+{% if result.safe_browsing.reputation %}
+<p class="mt-2 text-sm text-muted-light dark:text-muted-dark">Reputation Score: {{ result.safe_browsing.reputation }}</p>
+{% endif %}
+</div>
+</div>
+{% else %}
+<div class="bg-danger/10 dark:bg-danger/20 rounded-xl p-6 md:p-8 flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left border-2 border-danger/20">
+<div class="flex-shrink-0">
+<div class="bg-danger/20 dark:bg-danger/30 text-danger rounded-full p-4">
+<span class="material-symbols-outlined !text-5xl">dangerous</span>
+</div>
+</div>
+<div>
+<h3 class="text-xl font-bold text-danger">Threat Detected</h3>
+{% if result.safe_browsing.primary_threat == 'phishing' %}
+<p class="mt-1 text-muted-light dark:text-muted-dark">🎣 <strong>Phishing:</strong> This link may be trying to steal your personal information.</p>
+{% elif result.safe_browsing.primary_threat == 'malware' %}
+<p class="mt-1 text-muted-light dark:text-muted-dark">🦠 <strong>Malware:</strong> This link may contain harmful software.</p>
+{% elif result.safe_browsing.primary_threat == 'scam' %}
+<p class="mt-1 text-muted-light dark:text-muted-dark">💰 <strong>Scam/Fraud:</strong> This appears to be a fraudulent scheme.</p>
+{% elif result.safe_browsing.primary_threat == 'spam' %}
+<p class="mt-1 text-muted-light dark:text-muted-dark">📧 <strong>Spam:</strong> This link is associated with unwanted content.</p>
+{% elif result.safe_browsing.primary_threat == 'suspicious' %}
+<p class="mt-1 text-muted-light dark:text-muted-dark">🔍 <strong>Suspicious:</strong> This link shows unusual behavior patterns.</p>
+{% else %}
+<p class="mt-1 text-muted-light dark:text-muted-dark">⚠️ Multiple security engines have flagged this link as potentially dangerous.</p>
+{% endif %}
+</div>
+</div>
+{% endif %}
+</section>
 
-            <!-- Threat Types Breakdown (only if threats exist) -->
-            {% if not result.safe_browsing.safe and result.safe_browsing.threat_types %}
-              <div class="mb-6">
-                <h3 class="text-lg font-semibold mb-3">Detected Threat Types</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                  
-                  {% if result.safe_browsing.threat_types.phishing > 0 %}
-                    <div class="p-3 bg-red-50 border border-red-200 rounded-lg">
-                      <div class="flex items-center">
-                        <span class="text-red-600 text-lg mr-2">🎣</span>
-                        <div>
-                          <p class="font-semibold text-red-800">Phishing</p>
-                          <p class="text-red-600 text-xs">Identity theft attempt</p>
-                        </div>
-                      </div>
-                    </div>
-                  {% endif %}
+<!-- Government Verification -->
+<section class="mb-12">
+<h2 class="text-2xl font-bold tracking-tight mb-6 text-center">Government Verification</h2>
+{% if result.program %}
+<div class="border-2 border-primary border-dashed rounded-xl p-6 md:p-8 flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left bg-primary/5 dark:bg-primary/10">
+<div class="flex-shrink-0">
+<div class="bg-primary/10 dark:bg-primary/20 text-primary rounded-full p-4">
+<span class="material-symbols-outlined !text-5xl">verified</span>
+</div>
+</div>
+<div>
+<h3 class="text-xl font-bold text-primary">Verified Government Program</h3>
+<p class="mt-1 text-lg font-semibold">{{ result.program.name }}</p>
+{% if result.program.agency %}
+<p class="mt-1 text-muted-light dark:text-muted-dark">Agency: {{ result.program.agency }}</p>
+{% endif %}
+{% if result.program.description %}
+<p class="mt-2 text-muted-light dark:text-muted-dark">{{ result.program.description }}</p>
+{% endif %}
+</div>
+</div>
+{% else %}
+<div class="bg-subtle-light dark:bg-subtle-dark rounded-xl p-6 md:p-8 flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+<div class="flex-shrink-0">
+<div class="bg-info/10 dark:bg-info/20 text-info rounded-full p-4">
+<span class="material-symbols-outlined !text-5xl">help</span>
+</div>
+</div>
+<div>
+<h3 class="text-xl font-bold text-info">Not in Government Database</h3>
+<p class="mt-1 text-muted-light dark:text-muted-dark">This link is not in our government programs database. This doesn't necessarily mean it's unsafe, but we cannot verify it as an official government program.</p>
+</div>
+</div>
+{% endif %}
+</section>
 
-                  {% if result.safe_browsing.threat_types.malware > 0 %}
-                    <div class="p-3 bg-red-50 border border-red-200 rounded-lg">
-                      <div class="flex items-center">
-                        <span class="text-red-600 text-lg mr-2">🦠</span>
-                        <div>
-                          <p class="font-semibold text-red-800">Malware</p>
-                          <p class="text-red-600 text-xs">Harmful software</p>
-                        </div>
-                      </div>
-                    </div>
-                  {% endif %}
+{% if not result.safe_browsing.safe and result.safe_browsing.threat_types %}
+<!-- Threat Categories -->
+<section class="mb-12">
+<h2 class="text-2xl font-bold tracking-tight mb-6 text-center">Threat Categories</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
-                  {% if result.safe_browsing.threat_types.scam > 0 %}
-                    <div class="p-3 bg-orange-50 border border-orange-200 rounded-lg">
-                      <div class="flex items-center">
-                        <span class="text-orange-600 text-lg mr-2">💰</span>
-                        <div>
-                          <p class="font-semibold text-orange-800">Scam/Fraud</p>
-                          <p class="text-orange-600 text-xs">Financial fraud</p>
-                        </div>
-                      </div>
-                    </div>
-                  {% endif %}
+{% if result.safe_browsing.threat_types.phishing > 0 %}
+<div class="bg-subtle-light dark:bg-subtle-dark rounded-lg p-4 flex items-center gap-4">
+<div class="bg-danger/10 dark:bg-danger/20 text-danger rounded-full p-2">
+<span class="material-symbols-outlined">phishing</span>
+</div>
+<div>
+<p class="font-bold">Phishing</p>
+<p class="text-sm text-danger">Detected</p>
+</div>
+</div>
+{% else %}
+<div class="bg-subtle-light dark:bg-subtle-dark rounded-lg p-4 flex items-center gap-4">
+<div class="bg-success/10 dark:bg-success/20 text-success rounded-full p-2">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+<div>
+<p class="font-bold">Phishing</p>
+<p class="text-sm text-success">Not Detected</p>
+</div>
+</div>
+{% endif %}
 
-                  {% if result.safe_browsing.threat_types.spam > 0 %}
-                    <div class="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                      <div class="flex items-center">
-                        <span class="text-yellow-600 text-lg mr-2">📧</span>
-                        <div>
-                          <p class="font-semibold text-yellow-800">Spam</p>
-                          <p class="text-yellow-600 text-xs">Unwanted content</p>
-                        </div>
-                      </div>
-                    </div>
-                  {% endif %}
+{% if result.safe_browsing.threat_types.malware > 0 %}
+<div class="bg-subtle-light dark:bg-subtle-dark rounded-lg p-4 flex items-center gap-4">
+<div class="bg-danger/10 dark:bg-danger/20 text-danger rounded-full p-2">
+<span class="material-symbols-outlined">dangerous</span>
+</div>
+<div>
+<p class="font-bold">Malware</p>
+<p class="text-sm text-danger">Detected</p>
+</div>
+</div>
+{% else %}
+<div class="bg-subtle-light dark:bg-subtle-dark rounded-lg p-4 flex items-center gap-4">
+<div class="bg-success/10 dark:bg-success/20 text-success rounded-full p-2">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+<div>
+<p class="font-bold">Malware</p>
+<p class="text-sm text-success">Not Detected</p>
+</div>
+</div>
+{% endif %}
 
-                  {% if result.safe_browsing.threat_types.suspicious > 0 %}
-                    <div class="p-3 bg-purple-50 border border-purple-200 rounded-lg">
-                      <div class="flex items-center">
-                        <span class="text-purple-600 text-lg mr-2">🔍</span>
-                        <div>
-                          <p class="font-semibold text-purple-800">Suspicious</p>
-                          <p class="text-purple-600 text-xs">Unusual activity</p>
-                        </div>
-                      </div>
-                    </div>
-                  {% endif %}
+{% if result.safe_browsing.threat_types.scam > 0 %}
+<div class="bg-subtle-light dark:bg-subtle-dark rounded-lg p-4 flex items-center gap-4">
+<div class="bg-warning/10 dark:bg-warning/20 text-warning rounded-full p-2">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<div>
+<p class="font-bold">Scams</p>
+<p class="text-sm text-warning">Detected</p>
+</div>
+</div>
+{% else %}
+<div class="bg-subtle-light dark:bg-subtle-dark rounded-lg p-4 flex items-center gap-4">
+<div class="bg-success/10 dark:bg-success/20 text-success rounded-full p-2">
+<span class="material-symbols-oriented">check_circle</span>
+</div>
+<div>
+<p class="font-bold">Scams</p>
+<p class="text-sm text-success">Not Detected</p>
+</div>
+</div>
+{% endif %}
 
-                  {% if result.safe_browsing.threat_types.other_malicious > 0 %}
-                    <div class="p-3 bg-gray-50 border border-gray-200 rounded-lg">
-                      <div class="flex items-center">
-                        <span class="text-gray-600 text-lg mr-2">⚠️</span>
-                        <div>
-                          <p class="font-semibold text-gray-800">Other Threats</p>
-                          <p class="text-gray-600 text-xs">Additional risks</p>
-                        </div>
-                      </div>
-                    </div>
-                  {% endif %}
+{% if result.safe_browsing.threat_types.suspicious > 0 %}
+<div class="bg-subtle-light dark:bg-subtle-dark rounded-lg p-4 flex items-center gap-4">
+<div class="bg-info/10 dark:bg-info/20 text-info rounded-full p-2">
+<span class="material-symbols-outlined">help</span>
+</div>
+<div>
+<p class="font-bold">Suspicious</p>
+<p class="text-sm text-info">Detected</p>
+</div>
+</div>
+{% else %}
+<div class="bg-subtle-light dark:bg-subtle-dark rounded-lg p-4 flex items-center gap-4">
+<div class="bg-success/10 dark:bg-success/20 text-success rounded-full p-2">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+<div>
+<p class="font-bold">Suspicious</p>
+<p class="text-sm text-success">Not Detected</p>
+</div>
+</div>
+{% endif %}
 
-                </div>
-              </div>
-            {% endif %}
+</div>
+</section>
+{% endif %}
 
-            <!-- Detailed Threat Information -->
-            {% if result.safe_browsing.threat_details %}
-              <div class="mt-6">
-                <h3 class="text-lg font-semibold mb-3">Security Engine Reports</h3>
-                <div class="max-h-64 overflow-y-auto border rounded-lg bg-gray-50">
-                  <div class="space-y-2 p-4">
-                    {% for threat in result.safe_browsing.threat_details %}
-                      <div class="flex justify-between items-center p-2 bg-white rounded border-l-4 
-                        {% if threat.type == 'Phishing' %}border-red-500
-                        {% elif threat.type == 'Malware' %}border-red-600
-                        {% elif threat.type == 'Scam/Fraud' %}border-orange-500
-                        {% elif threat.type == 'Spam' %}border-yellow-500
-                        {% elif threat.type == 'Suspicious' %}border-purple-500
-                        {% else %}border-gray-500{% endif %}">
-                        <div>
-                          <p class="font-medium text-sm">{{ threat.engine }}</p>
-                          <p class="text-xs text-gray-600">{{ threat.result }}</p>
-                        </div>
-                        <span class="px-2 py-1 text-xs rounded
-                          {% if threat.type == 'Phishing' %}bg-red-100 text-red-800
-                          {% elif threat.type == 'Malware' %}bg-red-100 text-red-800
-                          {% elif threat.type == 'Scam/Fraud' %}bg-orange-100 text-orange-800
-                          {% elif threat.type == 'Spam' %}bg-yellow-100 text-yellow-800
-                          {% elif threat.type == 'Suspicious' %}bg-purple-100 text-purple-800
-                          {% else %}bg-gray-100 text-gray-800{% endif %}">
-                          {{ threat.type }}
-                        </span>
-                      </div>
-                    {% endfor %}
-                  </div>
-                </div>
-              </div>
-            {% endif %}
+{% if result.safe_browsing.threat_details %}
+<!-- Detailed Analysis -->
+<section>
+<h2 class="text-2xl font-bold tracking-tight mb-6 text-center">Detailed Analysis</h2>
+<div class="overflow-x-auto rounded-lg border border-subtle-light dark:border-subtle-dark">
+<table class="w-full text-sm text-left">
+<thead class="bg-subtle-light dark:bg-subtle-dark text-muted-light dark:text-muted-dark uppercase tracking-wider">
+<tr>
+<th class="px-6 py-3 font-medium" scope="col">Security Engine</th>
+<th class="px-6 py-3 font-medium" scope="col">Status</th>
+<th class="px-6 py-3 font-medium" scope="col">Findings</th>
+</tr>
+</thead>
+<tbody>
+{% for threat in result.safe_browsing.threat_details %}
+<tr class="border-t border-subtle-light dark:border-subtle-dark {% cycle '' 'bg-background-light dark:bg-background-dark' %}">
+<td class="px-6 py-4 font-medium whitespace-nowrap">{{ threat.engine }}</td>
+<td class="px-6 py-4">
+{% if threat.type == 'Phishing' or threat.type == 'Malware' %}
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-danger/10 dark:bg-danger/20 text-danger">
+{{ threat.type }}
+</span>
+{% elif threat.type == 'Scam/Fraud' or threat.type == 'Spam' %}
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-warning/10 dark:bg-warning/20 text-warning">
+{{ threat.type }}
+</span>
+{% elif threat.type == 'Suspicious' %}
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-info/10 dark:bg-info/20 text-info">
+{{ threat.type }}
+</span>
+{% else %}
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-muted-light/10 dark:bg-muted-light/20 text-muted-light">
+{{ threat.type }}
+</span>
+{% endif %}
+</td>
+<td class="px-6 py-4 text-muted-light dark:text-muted-dark">{{ threat.result }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</section>
+{% endif %}
 
-            <!-- Scan Metadata -->
-            <div class="mt-4 p-3 bg-gray-50 rounded-lg">
-              <p class="text-sm text-gray-600">
-                {% if result.safe_browsing.reputation %}
-                  <strong>Reputation Score:</strong> {{ result.safe_browsing.reputation }} |
-                {% endif %}
-                {% if result.safe_browsing.scan_date %}
-                  <strong>Last Scanned:</strong> {{ result.safe_browsing.scan_date|date:"M d, Y H:i" }}
-                {% endif %}
-              </p>
-            </div>
-          {% endif %}
-        </div>
+</div>
+{% endif %}
 
-        <!-- Government Program Check -->
-        <div class="bg-white p-6 rounded-lg shadow">
-          <h2 class="text-xl font-bold mb-4">Government Program Verification</h2>
-          
-          {% if result.program %}
-            <div class="p-4 bg-blue-50 border-l-4 border-blue-400">
-              <p class="text-blue-800 font-semibold"> Verified Government Program</p>
-              <p class="text-blue-700 mt-1"><strong>{{ result.program.name }}</strong></p>
-              {% if result.program.agency %}
-                <p class="text-blue-600 text-sm">Agency: {{ result.program.agency }}</p>
-              {% endif %}
-              {% if result.program.description %}
-                <p class="text-blue-600 text-sm mt-2">{{ result.program.description }}</p>
-              {% endif %}
-            </div>
-          {% else %}
-            <div class="p-4 bg-gray-50 border-l-4 border-gray-400">
-              <p class="text-gray-700">This link is not in our government programs database.</p>
-              <p class="text-gray-600 text-sm mt-1">This doesn't necessarily mean it's unsafe, but we cannot verify it as an official government program.</p>
-            </div>
-          {% endif %}
-        </div>
-
-      </div>
-    {% endif %}
-  </div>
+</div>
+</div>
+</main>
+</div>
 
 </body>
 </html>
