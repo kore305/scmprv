@@ -350,6 +350,64 @@ body.goog-te-compat { position: static !important; }
 
 
 
+
+// Custom translate functionality
+let isDropdownOpen = false;
+
+// Toggle dropdown
+document.getElementById('translate-btn').addEventListener('click', function() {
+    const dropdown = document.getElementById('language-dropdown');
+    
+    if (isDropdownOpen) {
+        dropdown.classList.add('opacity-0', 'invisible');
+        dropdown.classList.remove('opacity-100', 'visible');
+        isDropdownOpen = false;
+    } else {
+        dropdown.classList.remove('opacity-0', 'invisible');
+        dropdown.classList.add('opacity-100', 'visible');
+        isDropdownOpen = true;
+    }
+});
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('language-dropdown');
+    const button = document.getElementById('translate-btn');
+    
+    if (!dropdown.contains(event.target) && !button.contains(event.target)) {
+        dropdown.classList.add('opacity-0', 'invisible');
+        dropdown.classList.remove('opacity-100', 'visible');
+        isDropdownOpen = false;
+    }
+});
+
+// Translate function
+function translateToLanguage(langCode) {
+    // Close dropdown
+    const dropdown = document.getElementById('language-dropdown');
+    dropdown.classList.add('opacity-0', 'invisible');
+    isDropdownOpen = false;
+    
+    // Trigger Google Translate
+    const googleCombo = document.querySelector('.goog-te-combo');
+    if (googleCombo) {
+        googleCombo.value = langCode;
+        googleCombo.dispatchEvent(new Event('change'));
+    }
+    
+    // Update button text
+    const languages = {
+        'en': 'English',
+        'yo': 'Yorùbá', 
+        'ha': 'Hausa',
+        'ig': 'Igbo'
+    };
+    
+    const buttonText = document.querySelector('#translate-btn span:nth-child(2)');
+    buttonText.textContent = languages[langCode] || 'Translate';
+}
+
+// Update Google Translate init function
 function googleTranslateElementInit() {
     new google.translate.TranslateElement({
         pageLanguage: 'en',
