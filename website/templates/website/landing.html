@@ -113,7 +113,33 @@ body.goog-te-compat { position: static !important; }
                     </span>
                 </div>
             </div>
-            <div id="google_translate_element" class="flex items-center"></div>
+            <!-- Custom Translate Button -->
+<div class="relative">
+    <button id="translate-btn" class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-subtle-dark border border-subtle-light dark:border-subtle-dark rounded-lg hover:border-primary transition-all">
+        <span class="material-symbols-outlined text-lg">translate</span>
+        <span class="text-sm font-medium">Translate</span>
+        <span class="material-symbols-outlined text-sm">expand_more</span>
+    </button>
+    
+    <!-- Hidden Google Translate Element -->
+    <div id="google_translate_element" class="hidden"></div>
+    
+    <!-- Custom Language Dropdown -->
+    <div id="language-dropdown" class="absolute right-0 mt-2 w-48 bg-white dark:bg-subtle-dark rounded-lg shadow-lg border border-subtle-light dark:border-subtle-dark opacity-0 invisible transition-all duration-200 z-50">
+        <button onclick="translateToLanguage('en')" class="w-full text-left px-4 py-3 text-sm hover:bg-subtle-light dark:hover:bg-subtle-dark/50 rounded-t-lg transition-colors">
+            🇬🇧 English
+        </button>
+        <button onclick="translateToLanguage('yo')" class="w-full text-left px-4 py-3 text-sm hover:bg-subtle-light dark:hover:bg-subtle-dark/50 transition-colors">
+            🇳🇬 Yorùbá
+        </button>
+        <button onclick="translateToLanguage('ha')" class="w-full text-left px-4 py-3 text-sm hover:bg-subtle-light dark:hover:bg-subtle-dark/50 transition-colors">
+            🇳🇬 Hausa
+        </button>
+        <button onclick="translateToLanguage('ig')" class="w-full text-left px-4 py-3 text-sm hover:bg-subtle-light dark:hover:bg-subtle-dark/50 rounded-b-lg transition-colors">
+            🇳🇬 Igbo
+        </button>
+    </div>
+</div>
             <!-- Dark mode toggle -->
             <button id="theme-toggle" class="p-2 rounded-lg bg-subtle-light dark:bg-subtle-dark hover:bg-primary/20 transition-colors ml-4">
                 <span class="material-symbols-outlined dark:hidden">dark_mode</span>
