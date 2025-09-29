@@ -22,6 +22,8 @@ def query_openrouter(message, language="en"):
     You were built to assist nigerian citizens. 
     Reply in the same language as the user (supports English, Igbo, Hausa, Yoruba).
     Be helpful, concise, and factually correct.
+    if user asks about anything that's not related to government schemes, give a reply saying
+    you cant help with that.
     """
 
     payload = {
