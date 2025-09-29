@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>GovAssist Chatbot</title>
+<title>Ana - Safe check Chatbot</title>
 <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
@@ -44,7 +44,7 @@
 <header class="flex items-center justify-between px-6 py-4 border-b border-primary/20 dark:border-primary/30">
 <div class="flex items-center gap-3">
 <span class="material-symbols-outlined text-primary text-3xl">verified_user</span>
-<h1 class="text-xl font-bold text-gray-900 dark:text-white">GovAssist</h1>
+<h1 class="text-xl font-bold text-gray-900 dark:text-white">SAFE CHECK</h1>
 </div>
 <nav class="hidden md:flex items-center gap-6">
 <a class="text-sm font-medium hover:text-primary" href="#">Home</a>
@@ -60,7 +60,7 @@
 <main class="flex-1 flex flex-col items-center justify-center p-4">
 <div class="w-full max-w-2xl flex flex-col h-[calc(100vh-220px)] bg-white dark:bg-background-dark border border-primary/20 dark:border-primary/30 rounded-lg shadow-lg">
 <div class="p-4 border-b border-primary/20 dark:border-primary/30">
-<h2 class="text-lg font-bold text-center text-gray-900 dark:text-white">Chat with GovAssist</h2>
+<h2 class="text-lg font-bold text-center text-gray-900 dark:text-white">Chat with Ana</h2>
 </div>
 
 <!-- Chat Messages Area -->
@@ -69,9 +69,9 @@
   <div class="flex items-start gap-3">
     <div class="w-10 h-10 bg-center bg-no-repeat bg-cover rounded-full shrink-0" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBs9aFgYcQSqrRMAo-5XxAFn7-jaOLRDTaua9CoXNAkcCxPj6iHPtIcPbfN53IbuSxRdIFn7BIPelMSRhWsJ2O7RxZo2K0W5PmHDJ1GtSCo8-QSX5pv3wOMlI6OvWzYj7jipZ2nPxIMdB7hZrPwDgF5lgKYrx68j9ksRKNuI3oq0iM5Ukdj9Zlerk-spnQ_To4pfnEU7M0a9n02lT5V1dKgbx2DisrPHzsowpPemG16daaFz2PbE3NPkSqowrDuLNt8gv3UMEG5WNd1');"></div>
     <div class="flex flex-col items-start">
-      <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">GovAssist AI</span>
+      <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Safe Check AI</span>
       <div class="mt-1 p-3 rounded-2xl rounded-tl-md bg-primary/10 dark:bg-primary/20 text-gray-800 dark:text-gray-200 max-w-md shadow-sm">
-        <p>Hi there! I'm here to help you navigate government initiatives and verify information. How can I assist you today?</p>
+        <p>Hi there I'm Ana! I'm here to help you navigate government initiatives and verify information. How can I assist you today?</p>
       </div>
     </div>
   </div>
@@ -112,7 +112,7 @@
             hx-target="#chat-box"
             hx-swap="beforeend"
             hx-vals='{"message": "I want to report a scam"}'>
-      Report a Scam
+      <a href="{% 'report_scam' %}">Report a Scam</a>
     </button>
   </div>
 </div>
