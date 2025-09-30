@@ -1,15 +1,13 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Ana - Safe check Chatbot</title>
+<title>Ana - Safe Check Chatbot</title>
 <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;900&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script src="https://unpkg.com/htmx.org@1.9.6"></script>
 <script>
     tailwind.config = {
       darkMode: "class",
@@ -56,6 +54,7 @@
 <button class="p-2 rounded-full hover:bg-primary/10">
 <span class="material-symbols-outlined">language</span>
 </button>
+</div>
 </header>
 <main class="flex-1 flex flex-col items-center justify-center p-4">
 <div class="w-full max-w-2xl flex flex-col h-[calc(100vh-220px)] bg-white dark:bg-background-dark border border-primary/20 dark:border-primary/30 rounded-lg shadow-lg">
@@ -75,43 +74,26 @@
       </div>
     </div>
   </div>
-  
-  <!-- Dynamic messages will be added here via HTMX -->
 </div>
 
 <!-- Chat Input Area -->
 <div class="p-4 border-t border-primary/20 dark:border-primary/30">
-  <form id="chat-form"
-        hx-post="{% url 'chatbot' %}"
-        hx-target="#chat-box"
-        hx-swap="beforeend"
-        hx-on::after-request="this.reset()"
-        class="flex items-center gap-3">
-    {% csrf_token %}
-    <input name="message" 
-           class="form-input flex-1 w-full px-4 py-3 rounded-full bg-background-light dark:bg-gray-800 border-primary/30 focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400" 
+  <div class="flex items-center gap-3">
+    <input id="message-input" class="form-input flex-1 w-full px-4 py-3 rounded-full bg-background-light dark:bg-gray-800 border-primary/30 focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400" 
            placeholder="Type your question here..." 
            type="text"
            autocomplete="off"/>
-    <button type="submit" class="px-6 py-3 rounded-full bg-primary text-white font-semibold hover:bg-opacity-90 shadow-sm">
+    <button id="send-btn" class="px-6 py-3 rounded-full bg-primary text-white font-semibold hover:bg-opacity-90 shadow-sm">
       Send
     </button>
-  </form>
+  </div>
   
   <!-- Quick Action Buttons -->
   <div class="flex justify-center gap-4 mt-4">
-    <button class="px-4 py-2 text-sm font-medium rounded-full border border-primary text-primary hover:bg-primary/10"
-            hx-post="{% url 'chatbot' %}"
-            hx-target="#chat-box"
-            hx-swap="beforeend"
-            hx-vals='{"message": "I need help with educational resources"}'>
+    <button class="quick-action px-4 py-2 text-sm font-medium rounded-full border border-primary text-primary hover:bg-primary/10" data-message="I need help with educational resources">
       Access Educational Resources
     </button>
-    <button class="px-4 py-2 text-sm font-medium rounded-full border border-primary text-primary hover:bg-primary/10"
-            hx-post="{% url 'chatbot' %}"
-            hx-target="#chat-box"
-            hx-swap="beforeend"
-            hx-vals='{"message": "I want to report a scam"}'>
+    <button class="quick-action px-4 py-2 text-sm font-medium rounded-full border border-primary text-primary hover:bg-primary/10" data-message="I want to report a scam">
       Report a Scam
     </button>
   </div>
@@ -122,42 +104,117 @@
 </div>
 
 <script>
-  // Auto-scroll chat box to bottom after each reply
-  document.body.addEventListener("htmx:afterRequest", function() {
-    const chatBox = document.getElementById("chat-box");
-    chatBox.scrollTop = chatBox.scrollHeight;
-  });
+  const chatBox = document.getElementById('chat-box');
+  const messageInput = document.getElementById('message-input');
+  const sendBtn = document.getElementById('send-btn');
+  const quickActions = document.querySelectorAll('.quick-action');
 
-  // Show loading animation when request starts
-  document.body.addEventListener("htmx:beforeRequest", function() {
-    const chatBox = document.getElementById("chat-box");
-    const loadingDiv = document.createElement("div");
-    loadingDiv.id = "loading-animation";
-    loadingDiv.innerHTML = `
-      <div class="flex items-start gap-3">
+  function addMessage(text, type) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `flex items-start gap-3 ${type === 'user' ? 'flex-row-reverse' : ''}`;
+    
+    if (type === 'bot') {
+      messageDiv.innerHTML = `
         <div class="w-10 h-10 bg-center bg-no-repeat bg-cover rounded-full shrink-0" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBs9aFgYcQSqrRMAo-5XxAFn7-jaOLRDTaua9CoXNAkcCxPj6iHPtIcPbfN53IbuSxRdIFn7BIPelMSRhWsJ2O7RxZo2K0W5PmHDJ1GtSCo8-QSX5pv3wOMlI6OvWzYj7jipZ2nPxIMdB7hZrPwDgF5lgKYrx68j9ksRKNuI3oq0iM5Ukdj9Zlerk-spnQ_To4pfnEU7M0a9n02lT5V1dKgbx2DisrPHzsowpPemG16daaFz2PbE3NPkSqowrDuLNt8gv3UMEG5WNd1');"></div>
         <div class="flex flex-col items-start">
-          <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">GovAssist AI</span>
-          <div class="mt-1 p-3 rounded-2xl rounded-tl-md bg-primary/10 dark:bg-primary/20 max-w-md shadow-sm">
-            <div class="flex space-x-1 items-center">
-              <div class="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-              <div class="w-2 h-2 bg-primary rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-              <div class="w-2 h-2 bg-primary rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-            </div>
+          <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Safe Check AI</span>
+          <div class="mt-1 p-3 rounded-2xl rounded-tl-md bg-primary/10 dark:bg-primary/20 text-gray-800 dark:text-gray-200 max-w-md shadow-sm">
+            <p>${text}</p>
+          </div>
+        </div>
+      `;
+    } else {
+      messageDiv.innerHTML = `
+        <div class="w-10 h-10 bg-primary rounded-full shrink-0 flex items-center justify-center">
+          <span class="material-symbols-outlined text-white">person</span>
+        </div>
+        <div class="flex flex-col items-start">
+          <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">You</span>
+          <div class="mt-1 p-3 rounded-2xl rounded-tr-md bg-primary text-white max-w-md shadow-sm">
+            <p>${text}</p>
+          </div>
+        </div>
+      `;
+    }
+    
+    chatBox.appendChild(messageDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  function showLoading() {
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = 'loading-animation';
+    loadingDiv.className = 'flex items-start gap-3';
+    loadingDiv.innerHTML = `
+      <div class="w-10 h-10 bg-center bg-no-repeat bg-cover rounded-full shrink-0" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBs9aFgYcQSqrRMAo-5XxAFn7-jaOLRDTaua9CoXNAkcCxPj6iHPtIcPbfN53IbuSxRdIFn7BIPelMSRhWsJ2O7RxZo2K0W5PmHDJ1GtSCo8-QSX5pv3wOMlI6OvWzYj7jipZ2nPxIMdB7hZrPwDgF5lgKYrx68j9ksRKNuI3oq0iM5Ukdj9Zlerk-spnQ_To4pfnEU7M0a9n02lT5V1dKgbx2DisrPHzsowpPemG16daaFz2PbE3NPkSqowrDuLNt8gv3UMEG5WNd1');"></div>
+      <div class="flex flex-col items-start">
+        <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Safe Check AI</span>
+        <div class="mt-1 p-3 rounded-2xl rounded-tl-md bg-primary/10 dark:bg-primary/20 max-w-md shadow-sm">
+          <div class="flex space-x-1 items-center">
+            <div class="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
+            <div class="w-2 h-2 bg-primary rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+            <div class="w-2 h-2 bg-primary rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
           </div>
         </div>
       </div>
     `;
     chatBox.appendChild(loadingDiv);
     chatBox.scrollTop = chatBox.scrollHeight;
-  });
+  }
 
-  // Remove loading animation when request completes
-  document.body.addEventListener("htmx:afterRequest", function() {
-    const loadingDiv = document.getElementById("loading-animation");
+  function hideLoading() {
+    const loadingDiv = document.getElementById('loading-animation');
     if (loadingDiv) {
       loadingDiv.remove();
     }
+  }
+
+  function getBotResponse(input) {
+    const lowerInput = input.toLowerCase();
+    
+    if (lowerInput.includes('verify') || lowerInput.includes('link') || lowerInput.includes('check')) {
+      return "I can help you verify links! Please share the URL you'd like me to check for safety and authenticity.";
+    } else if (lowerInput.includes('program') || lowerInput.includes('initiative')) {
+      return "I can provide information about Nigerian federal programs. Which program would you like to know more about? Examples include N-Power, Anchor Borrowers, TraderMoni, or Conditional Cash Transfer.";
+    } else if (lowerInput.includes('scam') || lowerInput.includes('report')) {
+      return "To report a scam, please provide details about the suspicious activity. You can also contact EFCC via their official channels or visit your nearest police station.";
+    } else if (lowerInput.includes('education') || lowerInput.includes('resource')) {
+      return "I can help you access educational resources! Are you looking for scholarship information, student loan programs, or educational grants?";
+    } else {
+      return "I'm here to help! You can ask me to verify links, provide information about government programs, report scams, or access educational resources. How can I assist you?";
+    }
+  }
+
+  function sendMessage() {
+    const message = messageInput.value.trim();
+    if (!message) return;
+
+    addMessage(message, 'user');
+    messageInput.value = '';
+    
+    showLoading();
+    
+    setTimeout(() => {
+      hideLoading();
+      const response = getBotResponse(message);
+      addMessage(response, 'bot');
+    }, 1500);
+  }
+
+  sendBtn.addEventListener('click', sendMessage);
+  
+  messageInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      sendMessage();
+    }
+  });
+
+  quickActions.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const message = btn.getAttribute('data-message');
+      messageInput.value = message;
+      sendMessage();
+    });
   });
 </script>
 
