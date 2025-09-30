@@ -12,7 +12,7 @@ def query_openrouter(message, language="en"):
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://scmprv-production.up.railway.app/",
+        "HTTP-Referer": "https://safecheck.up.railway.app/",
         "X-Title": "GDS Verified Schemes Chatbot",
     }
 
@@ -26,15 +26,26 @@ def query_openrouter(message, language="en"):
     you cant help with that.
     """
 
+    # payload = {
+    #     "model": "openai/gpt-4o-mini",
+    #     "messages": [
+    #         {"role": "system", "content": system_prompt},
+    #         {"role": "user", "content": message},
+    #     ],
+    #     "max_tokens": 500,  # Add token limit
+    #     "temperature": 0.7,  # Add temperature for consistency
+    # }
+
     payload = {
-        "model": "openai/gpt-4o-mini",
+        "model": "x-ai/grok-4-fast:free:online",  # add :online to enable OpenRouter web-search plugin
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": message},
         ],
-        "max_tokens": 500,  # Add token limit
-        "temperature": 0.7,  # Add temperature for consistency
+        "max_tokens": 500,
+        "temperature": 0.7,
     }
+
 
     try:
         # Debug: Check if API key exists

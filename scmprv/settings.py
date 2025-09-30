@@ -9,7 +9,7 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://scmprv-production.up.railway.app',
+    'https://safecheck.up.railway.app',
     # Add other domains if needed
 ]
 # SECURITY
