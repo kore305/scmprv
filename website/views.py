@@ -8,11 +8,32 @@ from whatsapp_verifier.models import FederalProgram
 from .utils_chatbot import query_openrouter, search_programs_in_db
 from django.shortcuts import render, redirect
 from django.contrib import messages
-
+from django.http import JsonResponse
+from .models import ScamReport 
+import json
 from django.conf import settings
 from .forms import ScamReportForm
 import requests
 # Create your views here.
+
+
+@csrf_exempt
+def api_report_scam(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+
+        ScamReport.objects.create(
+            initiative_type=data.get("initiative_type"),
+            reference=data.get("reference"),
+            description=data.get("description"),
+            contact=data.get("contact"),
+            platforms=",".join(data.get("platform", []))
+        )
+
+        return JsonResponse({"status": "success"})
+    
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
 
 def landing_page(request):
     return render(request, "website/landing.html")

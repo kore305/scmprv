@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Report a Scam - SafeCheck</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+  <div class="w-full max-w-md p-6">
+    <h1 class="text-2xl font-bold text-center">Report a Scam</h1>
+    <p class="mt-2 text-gray-500 text-center">Help protect others by reporting scams</p>
+
+    <form id="scamForm" class="space-y-6 mt-6">
+      <!-- Initiative Type -->
+      <div>
+        <label class="block text-sm font-medium mb-2">Select Initiative Type</label>
+        <select id="initiative_type" class="w-full border p-2 rounded-lg">
+          <option value="">Choose...</option>
+          <option value="loan">Loan Scheme</option>
+          <option value="grant">Grant</option>
+          <option value="investment">Investment</option>
+        </select>
+      </div>
+
+      <!-- Platform -->
+      <div>
+        <label class="block text-sm font-medium mb-2">Where did you see it?</label>
+        <div class="flex flex-wrap gap-4">
+          <label><input type="checkbox" name="platform" value="whatsapp"/> WhatsApp</label>
+          <label><input type="checkbox" name="platform" value="facebook"/> Facebook</label>
+          <label><input type="checkbox" name="platform" value="email"/> Email</label>
+          <label><input type="checkbox" name="platform" value="other"/> Other</label>
+        </div>
+      </div>
+
+      <!-- Reference -->
+      <div>
+        <input type="text" id="reference" placeholder="Paste Link / Reference Code" 
+               class="w-full border p-2 rounded-lg"/>
+      </div>
+
+      <!-- Description -->
+      <div>
+        <textarea id="description" placeholder="What made you suspicious?" 
+                  class="w-full border p-2 rounded-lg"></textarea>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <input type="email" id="contact" placeholder="Email or Phone (optional)" 
+               class="w-full border p-2 rounded-lg"/>
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" 
+              class="px-6 py-3 bg-green-600 text-white rounded-lg w-full font-bold hover:bg-green-700">
+        Submit Report
+      </button>
+    </form>
+
+    <!-- Result Message -->
+    <div id="resultMessage" class="mt-4 text-center"></div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
