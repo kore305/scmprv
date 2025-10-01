@@ -70,12 +70,19 @@ TEMPLATES = [
 WSGI_APPLICATION = "scmprv.wsgi.application"
 
 # DATABASE
-DATABASES = {
-    "default": dj_database_url.parse(
-        os.environ.get("DATABASE_URL")  # must be set in Railway
-    )
-}
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
+if DATABASE_URL:
+    DATABASES = {
+        "default": dj_database_url.parse(DATABASE_URL)
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 # PASSWORDS
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
