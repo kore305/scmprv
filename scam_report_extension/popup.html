@@ -5,17 +5,118 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Report a Scam - SafeCheck</title>
   <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 font-sans">
-  <div class="w-full max-w-md p-6">
-    <h1 class="text-2xl font-bold text-center">Report a Scam</h1>
-    <p class="mt-2 text-gray-500 text-center">Help protect others by reporting scams</p>
+  <style>
+    /* Popup general layout */
+    body {
+      background: #f9fafb;
+      font-family: 'Public Sans', sans-serif;
+      width: 340px;   /* popup size */
+      min-height: 520px;
+      padding: 16px;
+      box-sizing: border-box;
+    }
 
-    <form id="scamForm" class="space-y-6 mt-6">
+    /* Container */
+    .popup-container {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    /* Title + Subtitle */
+    .popup-title {
+      font-size: 20px;
+      font-weight: 700;
+      text-align: center;
+      color: #111827;
+      margin-bottom: 6px;
+    }
+
+    .popup-subtitle {
+      font-size: 14px;
+      text-align: center;
+      color: #6b7280;
+      margin-bottom: 20px;
+    }
+
+    /* Form styles */
+    .popup-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .popup-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .popup-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #111827;
+      outline: none;
+      transition: border 0.2s ease;
+    }
+
+    .popup-input:focus {
+      border-color: #00C853;
+      box-shadow: 0 0 0 2px rgba(0,200,83,0.2);
+    }
+
+    .popup-checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 13px;
+      color: #374151;
+    }
+
+    .popup-checkbox-group input {
+      margin-right: 4px;
+    }
+
+    /* Button */
+    .popup-btn {
+      background: #00C853;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .popup-btn:hover {
+      background: #009844;
+    }
+
+    /* Message after submission */
+    .popup-message {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="popup-container">
+    <h1 class="popup-title">🚨 Report a Scam</h1>
+    <p class="popup-subtitle">Help protect others by reporting scams</p>
+
+    <form id="scamForm" class="popup-form">
       <!-- Initiative Type -->
       <div>
-        <label class="block text-sm font-medium mb-2">Select Initiative Type</label>
-        <select id="initiative_type" class="w-full border p-2 rounded-lg">
+        <label class="popup-label">Select Initiative Type</label>
+        <select id="initiative_type" class="popup-input">
           <option value="">Choose...</option>
           <option value="loan">Loan Scheme</option>
           <option value="grant">Grant</option>
@@ -25,8 +126,8 @@
 
       <!-- Platform -->
       <div>
-        <label class="block text-sm font-medium mb-2">Where did you see it?</label>
-        <div class="flex flex-wrap gap-4">
+        <label class="popup-label">Where did you see it?</label>
+        <div class="popup-checkbox-group">
           <label><input type="checkbox" name="platform" value="whatsapp"/> WhatsApp</label>
           <label><input type="checkbox" name="platform" value="facebook"/> Facebook</label>
           <label><input type="checkbox" name="platform" value="email"/> Email</label>
@@ -37,30 +138,29 @@
       <!-- Reference -->
       <div>
         <input type="text" id="reference" placeholder="Paste Link / Reference Code" 
-               class="w-full border p-2 rounded-lg"/>
+               class="popup-input"/>
       </div>
 
       <!-- Description -->
       <div>
         <textarea id="description" placeholder="What made you suspicious?" 
-                  class="w-full border p-2 rounded-lg"></textarea>
+                  class="popup-input h-24"></textarea>
       </div>
 
       <!-- Contact -->
       <div>
         <input type="email" id="contact" placeholder="Email or Phone (optional)" 
-               class="w-full border p-2 rounded-lg"/>
+               class="popup-input"/>
       </div>
 
       <!-- Submit -->
-      <button type="submit" 
-              class="px-6 py-3 bg-green-600 text-white rounded-lg w-full font-bold hover:bg-green-700">
+      <button type="submit" class="popup-btn">
         Submit Report
       </button>
     </form>
 
     <!-- Result Message -->
-    <div id="resultMessage" class="mt-4 text-center"></div>
+    <div id="resultMessage" class="popup-message"></div>
   </div>
 
   <script src="popup.js"></script>
