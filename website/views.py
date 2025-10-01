@@ -6,7 +6,9 @@ from django.views.decorators.csrf import csrf_exempt
 from .utils import check_url_with_virustotal, extract_domain
 from whatsapp_verifier.models import FederalProgram
 from .utils_chatbot import query_openrouter, search_programs_in_db
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
 from django.conf import settings
 from .forms import ScamReportForm
 import requests
@@ -145,14 +147,17 @@ def report_scam(request):
         form = ScamReportForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            messages.success(request, "Your report has been submitted successfully!")
-            return redirect('report_scam')
+            # ✅ Redirect to thank-you page after saving
+            return redirect('thank_you')
         else:
-            messages.error(request, "There was an error with your submission.")
+            messages.error(request, "There was an error with your submission. Please check the form.")
     else:
         form = ScamReportForm()
     
     return render(request, 'website/report_scam.html', {'form': form})
+
+def thank_you(request):
+    return render(request, 'website/thank_you.html')
 
 def initiatives(request):
     programs = FederalProgram.objects.all().order_by('name')
