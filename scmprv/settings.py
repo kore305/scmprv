@@ -12,6 +12,10 @@ CSRF_TRUSTED_ORIGINS = [
     'https://safecheck.up.railway.app',
     # Add other domains if needed
 ]
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # SECURITY
 VIRUSTOTAL_API_KEY = os.environ.get("VIRUSTOTAL_API_KEY")
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "fallback-secret")

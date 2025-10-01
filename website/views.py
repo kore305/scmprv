@@ -8,6 +8,7 @@ from whatsapp_verifier.models import FederalProgram
 from .utils_chatbot import query_openrouter, search_programs_in_db
 from django.shortcuts import render
 from django.conf import settings
+from .forms import ScamReportForm
 import requests
 # Create your views here.
 
@@ -140,7 +141,18 @@ def verify_link(request):
     })
 
 def report_scam(request):
-    return render(request, "website/report_scam.html")
+    if request.method == 'POST':
+        form = ScamReportForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Your report has been submitted successfully!")
+            return redirect('report_scam')
+        else:
+            messages.error(request, "There was an error with your submission.")
+    else:
+        form = ScamReportForm()
+    
+    return render(request, 'website/report_scam.html', {'form': form})
 
 def initiatives(request):
     programs = FederalProgram.objects.all().order_by('name')
