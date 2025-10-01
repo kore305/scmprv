@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraud Prevention Resources - Safe check</title>
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#13ec13",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102210",
+                    },
+                    fontFamily: {
+                        display: ["Public Sans"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px",
+                    },
+                },
+            },
+        };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-stone-900 dark:text-stone-100">
+    <div class="flex flex-col min-h-screen">
+        <!-- Header -->
+        <header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm border-b border-stone-200 dark:border-stone-800">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center gap-4">
+                        <div class="w-8 h-8 text-primary">
+                            <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 42.4379C4 42.4379 14.0962 36.0744 24 41.1692C35.0664 46.8624 44 42.2078 44 42.2078L44 7.01134C44 7.01134 35.068 11.6577 24.0031 5.96913C14.0971 0.876274 4 7.27094 4 7.27094L4 42.4379Z" fill="currentColor"></path>
+                            </svg>
+                        </div>
+                        <h1 class="text-2xl font-bold">Safe check</h1>
+                    </div>
+                    <nav class="hidden md:flex items-center gap-8">
+                        <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Home</a>
+                        <a class="text-sm font-medium text-primary" href="#">Resources</a>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow">
+            <div class="container mx-auto px-8 sm:px-12 lg:px-24 py-12">
+                <!-- Page Header -->
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-extrabold tracking-tight sm:text-5xl">Fraud Prevention Resources</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-stone-600 dark:text-stone-400">
+                        Educational materials to help you stay safe and protect yourself from scams and fraud.
+                    </p>
+                </div>
+
+                <!-- Videos Section -->
+                <section class="mb-16">
+                    <div class="flex items-center justify-between mb-8">
+                        <h3 class="text-3xl font-bold">Educational Videos</h3>
+                        <a href="#books" class="text-sm font-medium text-primary hover:opacity-70 transition-opacity">Jump to Books →</a>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <!-- Video 1 -->
+                        <div class="flex flex-col gap-3 group">
+                            <div class="relative aspect-video w-full rounded-lg overflow-hidden shadow-lg">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/b6L-S_EX9Ns?si=6XAq57X7GZ9jQG8Z" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h4 class="text-base font-semibold leading-tight">New Scams to Watch Out for in 2024</h4>
+                        </div>
+
+                        <!-- Video 2 -->
+                        <div class="flex flex-col gap-3 group">
+                            <div class="relative aspect-video w-full rounded-lg overflow-hidden shadow-lg">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/yQcgyjPGywg?si=p6TLQUP0Ues3h8lS" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h4 class="text-base font-semibold leading-tight">Stopping Online Gambling Fraud</h4>
+                        </div>
+
+                        <!-- Video 3 -->
+                        <div class="flex flex-col gap-3 group">
+                            <div class="relative aspect-video w-full rounded-lg overflow-hidden shadow-lg">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/wDY_SPfed7c?si=Y5TwkX3aM2xwugEi" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h4 class="text-base font-semibold leading-tight">The Psychology of Social Engineering</h4>
+                        </div>
+
+                        <!-- Video 4 -->
+                        <div class="flex flex-col gap-3 group">
+                            <div class="relative aspect-video w-full rounded-lg overflow-hidden shadow-lg">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/YVqurfWzB-Q?si=OpzhvtdIoPAPqL9S" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h4 class="text-base font-semibold leading-tight">Hacking Humans: Social Engineering Techniques</h4>
+                        </div>
+
+                        <!-- Video 5 -->
+                        <div class="flex flex-col gap-3 group">
+                            <div class="relative aspect-video w-full rounded-lg overflow-hidden shadow-lg">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/t9XEGQKGIso?si=JTDr9lqVwDYS9Svr" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h4 class="text-base font-semibold leading-tight">10 eBay Scams You Should Know About</h4>
+                        </div>
+
+                        <!-- Video 6 -->
+                        <div class="flex flex-col gap-3 group">
+                            <div class="relative aspect-video w-full rounded-lg overflow-hidden shadow-lg">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/qSvjUr8ufu4?si=sL2MxoLTR0frctbD" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h4 class="text-base font-semibold leading-tight">6 Best Practices for Fraud Prevention</h4>
+                        </div>
+
+                        <!-- Video 7 -->
+                        <div class="flex flex-col gap-3 group">
+                            <div class="relative aspect-video w-full rounded-lg overflow-hidden shadow-lg">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/fcB_jx6YZyI?si=ZqINPQjLTzEhCs23" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h4 class="text-base font-semibold leading-tight">Fraud Prevention and Detection</h4>
+                        </div>
+
+                        <!-- Video 8 -->
+                        <div class="flex flex-col gap-3 group">
+                            <div class="relative aspect-video w-full rounded-lg overflow-hidden shadow-lg">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/J7zvrXPBQ3o?si=Lq9fH5pGG2hNd-rY" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h4 class="text-base font-semibold leading-tight">Understanding Malware, Phishing & Ransomware</h4>
+                        </div>
+
+                        <!-- Video 9 -->
+                        <div class="flex flex-col gap-3 group">
+                            <div class="relative aspect-video w-full rounded-lg overflow-hidden shadow-lg">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/eizn9TC68E8?si=ERN-KByGiZ81j7mn" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h4 class="text-base font-semibold leading-tight">Protecting Yourself from Ransomware</h4>
+                        </div>
+
+                        <!-- Video 10 -->
+                        <div class="flex flex-col gap-3 group">
+                            <div class="relative aspect-video w-full rounded-lg overflow-hidden shadow-lg">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/gWGhUdHItto?si=bucQ38O6rB8bSGQS" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h4 class="text-base font-semibold leading-tight">What is Phishing</h4>
+                        </div>
+
+                        <!-- Video 11 -->
+                        <div class="flex flex-col gap-3 group">
+                            <div class="relative aspect-video w-full rounded-lg overflow-hidden shadow-lg">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/rb26NK0jtHM?si=mnVLExuD92x8M6Id" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h4 class="text-base font-semibold leading-tight">6 Most Common Types of Phishing Attacks</h4>
+                        </div>
+
+                        <!-- Video 12 -->
+                        <div class="flex flex-col gap-3 group">
+                            <div class="relative aspect-video w-full rounded-lg overflow-hidden shadow-lg">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/7h17MpjN8iw?si=o1gPamBzl7x6QXVg" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h4 class="text-base font-semibold leading-tight">The Science of Scams</h4>
+                        </div>
+
+                        <!-- Video 13 -->
+                        <div class="flex flex-col gap-3 group">
+                            <div class="relative aspect-video w-full rounded-lg overflow-hidden shadow-lg">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/lHLeuxNe-yM?si=hYdhPzCIvbpKm2YX" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h4 class="text-base font-semibold leading-tight">Beware the Con: 3 New Scams</h4>
+                        </div>
+
+                        <!-- Video 14 -->
+                        <div class="flex flex-col gap-3 group">
+                            <div class="relative aspect-video w-full rounded-lg overflow-hidden shadow-lg">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/zeBxZUE57yY?si=Nkk_erKbWWyesImu" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h4 class="text-base font-semibold leading-tight">How Do You Spot Investment Scams</h4>
+                        </div>
+
+                        <!-- Video 15 -->
+                        <div class="flex flex-col gap-3 group">
+                            <div class="relative aspect-video w-full rounded-lg overflow-hidden shadow-lg">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/rwiF0wtG2ec?si=J-8hte6_F6u3vxmr" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h4 class="text-base font-semibold leading-tight">Love Scammers' Tactics Exposed</h4>
+                        </div>
+
+                        <!-- Video 16 -->
+                        <div class="flex flex-col gap-3 group">
+                            <div class="relative aspect-video w-full rounded-lg overflow-hidden shadow-lg">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/K2kBPxxsR7w?si=2dOY7-aKbUqxpO1W" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h4 class="text-base font-semibold leading-tight">Did Your Email Get Hacked?</h4>
+                        </div>
+
+                        <!-- Video 17 -->
+                        <div class="flex flex-col gap-3 group">
+                            <div class="relative aspect-video w-full rounded-lg overflow-hidden shadow-lg">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/TBY5MOcpz18?si=SLQodOM319o3d0ZC" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h4 class="text-base font-semibold leading-tight">Psychology Behind Fraud and Scams</h4>
+                        </div>
+
+                        <!-- Video 18 -->
+                        <div class="flex flex-col gap-3 group">
+                            <div class="relative aspect-video w-full rounded-lg overflow-hidden shadow-lg">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/3H2CKTRqOEQ?si=l_XToyKMI8MZFQGm" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h4 class="text-base font-semibold leading-tight">How to Secure Your Online Accounts</h4>
+                        </div>
+
+                        <!-- Video 19 -->
+                        <div class="flex flex-col gap-3 group">
+                            <div class="relative aspect-video w-full rounded-lg overflow-hidden shadow-lg">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/XNOAOQktG6U?si=tEiAdGr02tMJoaRF" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h4 class="text-base font-semibold leading-tight">12 Privacy & Security Tools</h4>
+                        </div>
+
+                        <!-- Video 20 -->
+                        <div class="flex flex-col gap-3 group">
+                            <div class="relative aspect-video w-full rounded-lg overflow-hidden shadow-lg">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/U9ljpk3LIUA?si=U3D8vbq4ZS1XBZwE" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h4 class="text-base font-semibold leading-tight">4 Signs of an Online Dating Scam</h4>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Books Section -->
+                <section class="mb-16" id="books">
+                    <h3 class="text-3xl font-bold mb-8">Recommended Books</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <!-- Book 1 -->
+                        <div class="bg-white dark:bg-stone-900 p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border border-stone-200 dark:border-stone-800">
+                            <h4 class="text-lg font-bold mb-2">
+                                <a href="https://www.amazon.com/dp/076454280X" class="text-primary hover:opacity-70 transition-opacity">The Art of Deception</a>
+                            </h4>
+                            <p class="text-sm text-stone-600 dark:text-stone-400 mb-2">by Kevin Mitnick</p>
+                            <p class="text-sm text-stone-600 dark:text-stone-400">Learn about social engineering and the tactics used by hackers.</p>
+                        </div>
+
+                        <!-- Book 2 -->
+                        <div class="bg-white dark:bg-stone-900 p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border border-stone-200 dark:border-stone-800">
+                            <h4 class="text-lg font-bold mb-2">
+                                <a href="https://www.amazon.com/dp/111943338X" class="text-primary hover:opacity-70 transition-opacity">Social Engineering: The Science of Human Hacking</a>
+                            </h4>
+                            <p class="text-sm text-stone-600 dark:text-stone-400 mb-2">by Christopher Hadnagy</p>
+                            <p class="text-sm text-stone-600 dark:text-stone-400">A deep dive into the methods of social engineers and how to protect yourself.</p>
+                        </div>
+
+                        <!-- Book 3 -->
+                        <div class="bg-white dark:bg-stone-900 p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border border-stone-200 dark:border-stone-800">
+                            <h4 class="text-lg font-bold mb-2">
+                                <a href="https://www.amazon.com/dp/081443332X" class="text-primary hover:opacity-70 transition-opacity">Spam Nation</a>
+                            </h4>
+                            <p class="text-sm text-stone-600 dark:text-stone-400 mb-2">by Brian Krebs</p>
+                            <p class="text-sm text-stone-600 dark:text-stone-400">An investigation into the world of spam and cybercrime.</p>
+                        </div>
+
+                        <!-- Book 4 -->
+                        <div class="bg-white dark:bg-stone-900 p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border border-stone-200 dark:border-stone-800">
+                            <h4 class="text-lg font-bold mb-2">
+                                <a href="https://www.amazon.com/dp/0307588696" class="text-primary hover:opacity-70 transition-opacity">Kingpin</a>
+                            </h4>
+                            <p class="text-sm text-stone-600 dark:text-stone-400 mb-2">by Kevin Poulsen</p>
+                            <p class="text-sm text-stone-600 dark:text-stone-400">A thrilling true story of a hacker's rise and fall in the cybercrime world.</p>
+                        </div>
+
+                        <!-- Book 5 -->
+                        <div class="bg-white dark:bg-stone-900 p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border border-stone-200 dark:border-stone-800">
+                            <h4 class="text-lg font-bold mb-2">
+                                <a href="https://www.amazon.com/dp/0525427414" class="text-primary hover:opacity-70 transition-opacity">The Confidence Game</a>
+                            </h4>
+                            <p class="text-sm text-stone-600 dark:text-stone-400 mb-2">by Maria Konnikova</p>
+                            <p class="text-sm text-stone-600 dark:text-stone-400">An exploration into the psychology behind why we fall for scams.</p>
+                        </div>
+
+                        <!-- Book 6 -->
+                        <div class="bg-white dark:bg-stone-900 p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border border-stone-200 dark:border-stone-800">
+                            <h4 class="text-lg font-bold mb-2">
+                                <a href="https://www.amazon.com/dp/0385539002" class="text-primary hover:opacity-70 transition-opacity">Future Crimes</a>
+                            </h4>
+                            <p class="text-sm text-stone-600 dark:text-stone-400 mb-2">by Marc Goodman</p>
+                            <p class="text-sm text-stone-600 dark:text-stone-400">A comprehensive look at how technology is being used for crime.</p>
+                        </div>
+
+                        <!-- Book 7 -->
+                        <div class="bg-white dark:bg-stone-900 p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border border-stone-200 dark:border-stone-800">
+                            <h4 class="text-lg font-bold mb-2">
+                                <a href="https://www.amazon.com/dp/0812994554" class="text-primary hover:opacity-70 transition-opacity">The Cyber Effect</a>
+                            </h4>
+                            <p class="text-sm text-stone-600 dark:text-stone-400 mb-2">by Dr. Mary Aiken</p>
+                            <p class="text-sm text-stone-600 dark:text-stone-400">An analysis of how our online lives impact our real-world behavior.</p>
+                        </div>
+
+                        <!-- Book 8 -->
+                        <div class="bg-white dark:bg-stone-900 p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border border-stone-200 dark:border-stone-800">
+                            <h4 class="text-lg font-bold mb-2">
+                                <a href="https://www.amazon.com/dp/0199918112" class="text-primary hover:opacity-70 transition-opacity">Cybersecurity and Cyberwar</a>
+                            </h4>
+                            <p class="text-sm text-stone-600 dark:text-stone-400 mb-2">by P.W. Singer & Allan Friedman</p>
+                            <p class="text-sm text-stone-600 dark:text-stone-400">A guide to understanding the basics of cybersecurity and cyber warfare.</p>
+                        </div>
+
+                        <!-- Book 9 -->
+                        <div class="bg-white dark:bg-stone-900 p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border border-stone-200 dark:border-stone-800">
+                            <h4 class="text-lg font-bold mb-2">
+                                <a href="https://www.amazon.com/dp/0471782661" class="text-primary hover:opacity-70 transition-opacity">The Art of Intrusion</a>
+                            </h4>
+                            <p class="text-sm text-stone-600 dark:text-stone-400 mb-2">by Kevin Mitnick</p>
+                            <p class="text-sm text-stone-600 dark:text-stone-400">Real-life stories of hackers and the lessons we can learn from them.</p>
+                        </div>
+
+                        <!-- Book 10 -->
+                        <div class="bg-white dark:bg-stone-900 p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border border-stone-200 dark:border-stone-800">
+                            <h4 class="text-lg font-bold mb-2">
+                                <a href="https://www.amazon.com/dp/1593271441" class="text-primary hover:opacity-70 transition-opacity">Hacking: The Art of Exploitation</a>
+                            </h4>
+                            <p class="text-sm text-stone-600 dark:text-stone-400 mb-2">by Jon Erickson</p>
+                            <p class="text-sm text-stone-600 dark:text-stone-400">A technical guide to hacking and cybersecurity.</p>
+                        </div>
+
+                        <!-- Book 11 -->
+                        <div class="bg-white dark:bg-stone-900 p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border border-stone-200 dark:border-stone-800">
+                            <h4 class="text-lg font-bold mb-2">
+                                <a href="https://www.amazon.com/dp/0316037702" class="text-primary hover:opacity-70 transition-opacity">Ghost in the Wires</a>
+                            </h4>
+                            <p class="text-sm text-stone-600 dark:text-stone-400 mb-2">by Kevin Mitnick</p>
+                            <p class="text-sm text-stone-600 dark:text-stone-400">Mitnick's autobiography, detailing his experiences as a fugitive hacker.</p>
+                        </div>
+
+                        <!-- Book 12 -->
+                        <div class="bg-white dark:bg-stone-900 p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border border-stone-200 dark:border-stone-800">
+                            <h4 class="text-lg font-bold mb-2">
+                                <a href="https://www.amazon.com/dp/0465043964" class="text-primary hover:opacity-70 transition-opacity">Cult of the Dead Cow</a>
+                            </h4>
+                            <p class="text-sm text-stone-600 dark:text-stone-400 mb-2">by Joseph Menn</p>
+                            <p class="text-sm text-stone-600 dark:text-stone-400">The story of the notorious hacking group and their impact on cybersecurity.</p>
+                        </div>
+
+                        <!-- Book 13 -->
+                        <div class="bg-white dark:bg-stone-900 p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border border-stone-200 dark:border-stone-800">
+                            <h4 class="text-lg font-bold mb-2">
+                                <a href="https://www.amazon.com/dp/1118958470" class="text-primary hover:opacity-70 transition-opacity">Phishing Dark Waters</a>
+                            </h4>
+                            <p class="text-sm text-stone-600 dark:text-stone-400 mb-2">by Christopher Hadnagy & Michele Fincher</p>
+                            <p class="text-sm text-stone-600 dark:text-stone-400">A book on the dangers of phishing and how to protect against it.</p>
+                        </div>
+
+                        <!-- Book 14 -->
+                        <div class="bg-white dark:bg-stone-900 p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border border-stone-200 dark:border-stone-800">
+                            <h4 class="text-lg font-bold mb-2">
+                                <a href="https://www.amazon.com/dp/0393608883" class="text-primary hover:opacity-70 transition-opacity">Click Here to Kill Everybody</a>
+                            </h4>
+                            <p class="text-sm text-stone-600 dark:text-stone-400 mb-2">by Bruce Schneier</p>
+                            <p class="text-sm text-stone-600 dark:text-stone-400">A look at the risks of the connected world and what we can do to secure it.</p>
+                        </div>
+
+                        <!-- Book 15 -->
+                        <div class="bg-white dark:bg-stone-900 p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border border-stone-200 dark:border-stone-800">
+                            <h4 class="text-lg font-bold mb-2">
+                                <a href="https://www.amazon.com/dp/141650755X" class="text-primary hover:opacity-70 transition-opacity">The Cuckoo's Egg</a>
+                            </h4>
+                            <p class="text-sm text-stone-600 dark:text-stone-400 mb-2">by Clifford Stoll</p>
+                            <p class="text-sm text-stone-600 dark:text-stone-400">The story of how a lone astronomer tracked down a hacker.</p>
+                        </div>
+
+                        <!-- Book 16 -->
+                        <div class="bg-white dark:bg-stone-900 p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border border-stone-200 dark:border-stone-800">
+                            <h4 class="text-lg font-bold mb-2">
+                                <a href="https://www.amazon.com/dp/125018302X" class="text-primary hover:opacity-70 transition-opacity">Zero Day</a>
+                            </h4>
+                            <p class="text-sm text-stone-600 dark:text-stone-400 mb-2">by Mark Russinovich</p>
+                            <p class="text-sm text-stone-600 dark:text-stone-400">A fictional thriller based on real-world cybersecurity threats.</p>
+                        </div>
+
+                        <!-- Book 17 -->
+                        <div class="bg-white dark:bg-stone-900 p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border border-stone-200 dark:border-stone-800">
