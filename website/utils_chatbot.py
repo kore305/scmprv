@@ -57,7 +57,7 @@ RESPONSE FORMATTING:
     # }
 
     payload = {
-        "model": "x-ai/grok-4-fast:free:online",  # add :online to enable OpenRouter web-search plugin
+        "model": "x-ai/grok-4-fast",  # add :online to enable OpenRouter web-search plugin
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": message},
